@@ -12,7 +12,7 @@ PROGRAM = glutapp
 # OPTFLAGS = -g  # for debug
 OPTFLAGS =
 CC       = g++
-CFLAGS   = -w $(OPTFLAGS) -std=c++11 -pthread -Wnoc++11-narrowing
+CFLAGS   = -w $(OPTFLAGS) -std=c++11 -pthread -Wno-narrowing
 
 ifeq ($(strip $(OS)),Darwin)
 	LDFLAGS = -framework CoreFoundation -framework GLUT -framework OpenGL
