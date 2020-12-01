@@ -3,47 +3,64 @@
 
 static Game *singleton;
 
-
 void explosionTimer(int id) {
     singleton->explosion->advance();
     glutTimerFunc(33, explosionTimer, id);
 }
 
-// void timer(int){
-//     std::cout << "test" << std::endl;
-//     glutTimerFunc(1000, timer, 0);
-// }
+void timer(int id) {
+    singleton->player->idle();
+    glutTimerFunc(1000.0 / 60.0, timer, id);
+}
 
 Game::Game() {
 
     explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.25, 0.25);
-    player = new TexRect("player-idle.png", -.1, -.72, .3, .3);
+    player = new Player();
     shapes.push_back(player);
 
     // Pushing different kinds of Shape in the collection
     shapes.push_back(explosion);
-    shapes.push_back(new Text(0,0, "this is some text", 0, 0, 1));
+    shapes.push_back(new Text(0, 0, "this is some text", 0, 0, 1));
     singleton = this;
-    // glutTimerFunc(1000, timer, 1);
+    timer(1);
 
     explosionTimer(0);
 }
 
-
+void Game::idle() {
+    // player->idle();
+}
 
 void Game::keyDown(unsigned char key, float x, float y) {
-    if(key == ' '){
-
+    if (key == ' ') {
     }
 }
 
-void Game::specialKeyDown(int key, float x, float y) {
-    if(key == GLUT_KEY_LEFT){
-        player->setX(player->getX() -.05);
-    }else if(key == GLUT_KEY_RIGHT){
-        player->setX(player->getX() +.05);
-    }else if(key == GLUT_KEY_UP){
+void Game::keyUp(unsigned char key, float x, float y) {
+}
 
+void Game::specialKeyDown(int key, float x, float y) {
+    if (key == GLUT_KEY_LEFT) {
+        player->setDX(player->getDX() - player->getSpeed());
+        player->setDirection(1);
+    } else if (key == GLUT_KEY_RIGHT) {
+        player->setDX(player->getDX() + player->getSpeed());
+        player->setDirection(0);
+
+    } else if (key == GLUT_KEY_UP) {
+        player->jump();
+    }
+}
+
+void Game::specialKeyUp(int key, float x, float y) {
+    if (key == GLUT_KEY_LEFT) {
+        player->setDX(player->getDX() + player->getSpeed());
+
+    } else if (key == GLUT_KEY_RIGHT) {
+        player->setDX(player->getDX() - player->getSpeed());
+    } else if (key == GLUT_KEY_DOWN) {
+        // player->setSpeed();
     }
 }
 

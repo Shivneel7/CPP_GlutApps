@@ -20,6 +20,8 @@ public:
     
     void keyDown(unsigned char key, float x, float y);
     void specialKeyDown(int key, float x, float y);
+    void keyUp(unsigned char key, float x, float y);
+    void specialKeyUp(int key, float x, float y);
 
     friend void frameCounter(int id);
     
