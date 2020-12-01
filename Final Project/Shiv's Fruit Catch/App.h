@@ -1,23 +1,27 @@
 #ifndef App_h
 #define App_h
 
-#include <vector>
 #include "GlutApp.h"
-#include "Rect.h"
-#include "Circle.h"
-#include "TexRect.h"
+#include "Game.h"
+
 
 class App: public GlutApp {
-
-std::vector<Shape*> shapes;
+    Game* game;
+    std::vector<Shape*> shapes;
+    int frames;
 
 public:
     
     App(int argc, char** argv, int width, int height, const char* title);
     
+    void idle();
+    
     void draw() const;
     
     void keyDown(unsigned char key, float x, float y);
+    void specialKeyDown(int key, float x, float y);
+
+    friend void frameCounter(int id);
     
     ~App();
 };

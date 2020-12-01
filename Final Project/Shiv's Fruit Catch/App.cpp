@@ -1,30 +1,45 @@
 #include <iostream>
 #include "App.h"
 
+static App* singleton;
+
+
+void frameCounter(int id){
+    std::cout << "FPS: " << singleton->frames << std::endl;
+    singleton->frames = 0;
+    glutTimerFunc(1000, frameCounter, 0);
+}
 
 App::App(int argc, char** argv, int width, int height, const char* title): GlutApp(argc, argv, width, height, title){
-
-    // Pushing different kinds of Shape in the collection
-    shapes.push_back(new TexRect("lion.png", -.1, 0, .5, .5));
-    //shapes.push_back(new Rect());
-    //shapes.push_back(new Circle());
+    game = new Game();
+    frames = 0;
+    singleton = this;
+    frameCounter(0);
 } 
 
+
+
 void App::draw() const {
-    for(auto i = shapes.begin(); i != shapes.end(); i++){
-        (*i)->draw();
-    }
+    game->draw();
+}
+
+void App::idle(){
+    redraw();
+    frames++;
 }
 
 void App::keyDown(unsigned char key, float x, float y){
     if (key == 27){
         exit(0);
     }
+    game->keyDown(key, x, y);
 }
 
-App::~App(){   
-    for(auto i = shapes.begin(); i != shapes.end(); i++){
-        delete *i;
-    }
+void App::specialKeyDown(int key, float x, float y){
+    game->specialKeyDown(key, x, y);
+}
+
+App::~App(){
+    delete game;
     std::cout << "Exiting..." << std::endl;
 }

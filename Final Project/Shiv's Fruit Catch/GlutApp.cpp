@@ -20,6 +20,7 @@ GlutApp::GlutApp(int argc, char** argv, int width, int height, const char* title
     
     // Setup window position, size, and title
     glutInitWindowPosition(0, 0);
+    // glutInitWindowPosition(3000, 100);
     glutCreateWindow(this->title);
     glutReshapeWindow(this->width, this->height);
 
