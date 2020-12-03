@@ -1,0 +1,23 @@
+Make good sprite sheet classs
+
+Game:
+    Bombs
+    Lives
+    explosion
+    turtle i need to jump over,
+    bombs i need to dodge
+    make my fast speed actuall useful
+    win condition
+    trigger events such as enemy appearing, or ahve enemy all the time. enemy all the time is better
+    NO MORE WEAPON (Then I do not need to fix the sprite sheet)
+    Background
+
+Clean Everything:
+    FIX HUD
+    FIX OBJECTS
+    PLAYER IDLE etc.
+    MAKE THE Abstraction GOOD 
+    Clean Game
+    Make Abstraction good
+    delete unused files and Abstractions
+    Add Constructors

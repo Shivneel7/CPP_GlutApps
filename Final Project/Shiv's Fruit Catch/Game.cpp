@@ -3,7 +3,7 @@
 #include <string>
 
 static Game *singleton;
-const float Game::PLAYER_BASE_SPEED = .01;
+const float Game::PLAYER_BASE_SPEED = .02;
 
 int frames = 0;
 
@@ -21,10 +21,12 @@ void gameLoop(int id) {
     for (auto i = singleton->objects.begin(); i != singleton->objects.end(); i++) {
         (*i)->idle();
         if (singleton->player->contains((*i)->getX(), (*i)->getY())) {
-            singleton->score++;
-            singleton->s->setText("Score: " + std::to_string(singleton->score));
-            delete (*i);
-            singleton->objects.erase(i);
+            if ((*i)->getID() == fruit) {
+                singleton->score++;
+                singleton->s->setText("Score: " + std::to_string(singleton->score));
+                delete (*i);
+                singleton->objects.erase(i);
+            }
         }
     }
     glutPostRedisplay();
@@ -34,7 +36,6 @@ void gameLoop(int id) {
 
     glutTimerFunc(1000.0 / 60, gameLoop, id);
 }
-
 
 void spawnBanana(int id) {
     singleton->objects.push_back(new Fruit());
@@ -67,44 +68,56 @@ Game::Game() {
 }
 
 void Game::idle() {
-    
 }
 
 void Game::keyDown(unsigned char key, float x, float y) {
-    if (key == ' ') {
-    }
-}
-
-void Game::keyUp(unsigned char key, float x, float y) {
-}
-
-void Game::specialKeyDown(int key, float x, float y) {
-    if (key == GLUT_KEY_LEFT) {
+    if (key == 'a' || key == 'A') {
         player->setDX(player->getDX() - PLAYER_BASE_SPEED);
         player->setDirection(1);
         // std::cout<< (rand()%190)/100.0 - 1.0<< std::endl;
 
-    } else if (key == GLUT_KEY_RIGHT) {
+    } else if (key == 'd' || key == 'D') {
 
         player->setDX(player->getDX() + PLAYER_BASE_SPEED);
         player->setDirection(0);
 
-    } else if (key == GLUT_KEY_UP) {
+    } else if (key == 'w') {
         player->jump();
     }
 }
 
-void Game::specialKeyUp(int key, float x, float y) {
-    if (key == GLUT_KEY_LEFT) {
+void Game::keyUp(unsigned char key, float x, float y) {
+    if (key == 'a' || key == 'A') {
         player->setDX(player->getDX() + PLAYER_BASE_SPEED);
         // std::cout << player->getDX() << std::endl;
 
-    } else if (key == GLUT_KEY_RIGHT) {
+    } else if (key == 'd' || key == 'D') {
         player->setDX(player->getDX() - PLAYER_BASE_SPEED);
-
-    } else if (key == GLUT_KEY_DOWN) {
-        // player->setSpeed();
     }
+    // std::cout<< key << std::endl;
+}
+
+void Game::specialKeyDown(int key, float x, float y) {
+    if (key == GLUT_KEY_SHIFT_L) {
+        player->setIsFaster(true);
+    }
+    // std::cout<< key << std::endl;
+}
+
+void Game::specialKeyUp(int key, float x, float y) {
+    if (key == GLUT_KEY_SHIFT_L) {
+        player->setIsFaster(false);
+    }
+    // if (key == GLUT_KEY_LEFT) {
+    //     player->setDX(player->getDX() + PLAYER_BASE_SPEED);
+    // std::cout << player->getDX() << std::endl;
+
+    // } else if (key == GLUT_KEY_RIGHT) {
+    //     player->setDX(player->getDX() - PLAYER_BASE_SPEED);
+
+    // } else if (key == GLUT_KEY_DOWN) {
+    //     // player->setSpeed();
+    // }
 }
 
 void Game::draw() const {

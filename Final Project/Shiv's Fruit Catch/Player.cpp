@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player() : MovingSprite("player-idle.png", 1, 1, -.1, -.72, .3, .3, 0, 0, player), direction(0){
+Player::Player() : MovingSprite("player-idle.png", 1, 1, -.1, -.72, .3, .3, 0, 0, player), direction(0), isFaster(0) {
 }
 
 void Player::draw(float z) const {
@@ -43,6 +43,17 @@ void Player::draw(float z) const {
 
 void Player::idle() {
     x += dx;
+
+    if (isFaster) {
+        x += dx;
+    }
+
+    if (x < -1) {
+        x = -1;
+    }
+    if (x > 1 - w) {
+        x = 1 - w;
+    }
     y += dy;
     dy -= .001;
     if (y < -.7) {
@@ -56,4 +67,8 @@ void Player::jump() {
 
 void Player::setDirection(bool b) {
     direction = b;
+}
+
+void Player::setIsFaster(bool b) {
+    isFaster = b;
 }
