@@ -1,6 +1,8 @@
-Make good sprite sheet classs
 
+
+            ~Make good sprite sheet class
 Game:
+    change player model
     Bombs
     Lives
     explosion
@@ -10,8 +12,12 @@ Game:
     win condition
     trigger events such as enemy appearing, or ahve enemy all the time. enemy all the time is better
     NO MORE WEAPON (Then I do not need to fix the sprite sheet)
-    Background
+    add Background
 
+    Penalty for not cathcing fruit?
+        Little Buddy makes fail face, lose some score.
+
+        
 Clean Everything:
     FIX HUD
     FIX OBJECTS

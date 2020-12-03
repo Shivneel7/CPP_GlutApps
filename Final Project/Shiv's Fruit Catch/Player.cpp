@@ -9,33 +9,49 @@ void Player::draw(float z) const {
     glEnable(GL_TEXTURE_2D);
 
     glBegin(GL_QUADS);
+    // glColor4f(1, 1, 1, 1);
+
+    // if (!direction) {
+    //     glTexCoord2f(1, 0);
+    //     glVertex3f(x, y - h, z);
+
+    //     glTexCoord2f(1, 1);
+    //     glVertex3f(x, y, z);
+
+    //     glTexCoord2f(0, 1);
+    //     glVertex3f(x + w, y, z);
+
+    //     glTexCoord2f(0, 0);
+    //     glVertex3f(x + w, y - h, z);
+    // } else {
+    //     glTexCoord2f(0, 0);
+    //     glVertex3f(x, y - h, z);
+
+    //     glTexCoord2f(0, 1);
+    //     glVertex3f(x, y, z);
+
+    //     glTexCoord2f(1, 1);
+    //     glVertex3f(x + w, y, z);
+
+    //     glTexCoord2f(1, 0);
+    //     glVertex3f(x + w, y - h, z);
+    // }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~TEST-----------=============
+
+    //Shows half the player with the full box. to see half the player correctly sized, make w = w/2
     glColor4f(1, 1, 1, 1);
+    glTexCoord2f(0, 0);
+    glVertex3f(x, y - h, z);
 
-    if (!direction) {
-        glTexCoord2f(1, 0);
-        glVertex3f(x, y - h, z);
+    glTexCoord2f(0, 1);
+    glVertex3f(x, y, z);
 
-        glTexCoord2f(1, 1);
-        glVertex3f(x, y, z);
+    glTexCoord2f(.5, 1);
+    glVertex3f(x + w, y, z);
 
-        glTexCoord2f(0, 1);
-        glVertex3f(x + w, y, z);
-
-        glTexCoord2f(0, 0);
-        glVertex3f(x + w, y - h, z);
-    } else {
-        glTexCoord2f(0, 0);
-        glVertex3f(x, y - h, z);
-
-        glTexCoord2f(0, 1);
-        glVertex3f(x, y, z);
-
-        glTexCoord2f(1, 1);
-        glVertex3f(x + w, y, z);
-
-        glTexCoord2f(1, 0);
-        glVertex3f(x + w, y - h, z);
-    }
+    glTexCoord2f(.5, 0);
+    glVertex3f(x + w, y - h, z);
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
