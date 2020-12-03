@@ -15,7 +15,6 @@ class Game {
     std::vector<MovingSprite *> objects;
 
     Player *player;
-    TexRect* test;
 
     Text* s;
     int score;

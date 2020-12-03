@@ -18,29 +18,36 @@ void gameLoop(int id) {
     // singleton->explosion->setX(singleton->player->getX());
     // singleton->explosion->advance();
 
-    for (auto i = singleton->objects.begin(); i != singleton->objects.end(); i++) {
+    // std::vector<MovingSprite *>::iterator end = singleton->objects.end();
+    for (auto i = singleton->objects.begin(); i != singleton->objects.end();) {
         (*i)->idle();
+
         if (singleton->player->contains((*i)->getX(), (*i)->getY())) {
             if ((*i)->getID() == fruit) {
                 singleton->score++;
                 singleton->s->setText("Score: " + std::to_string(singleton->score));
+
                 delete (*i);
-                singleton->objects.erase(i);
+                i = singleton->objects.erase(i);
             }
+        } else {
+            ++i;
         }
     }
+
+    // singleton->objects.erase(toBeDeleted);
+
     glutPostRedisplay();
     frames++;
 
     // std::cout << singleton->score << std::endl;
 
     glutTimerFunc(1000.0 / 60, gameLoop, id);
+    // glutTimerFunc(1000, gameLoop, id);
 }
 
 void spawnBanana(int id) {
     singleton->objects.push_back(new Fruit());
-    // singleton->objects.push_back(new MovingSprite("banana.png", 1, 1, 0, 1, .1, .1, 0, -.01, fruit));
-    // singleton->test = new TexRect("banana.png");
     glutTimerFunc(1000, spawnBanana, id);
 }
 Game::Game() {
