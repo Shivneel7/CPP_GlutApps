@@ -25,7 +25,7 @@ protected:
 public:
     TexRect(const char*, float, float, float, float);
     
-    void draw(float z=0) const;
+    virtual void draw(float z=0) const;
 };
 
 #endif

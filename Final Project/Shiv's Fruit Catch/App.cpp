@@ -3,21 +3,13 @@
 
 static App* singleton;
 
-
-void frameCounter(int id){
-    std::cout << "FPS: " << singleton->frames << std::endl;
-    singleton->frames = 0;
-    glutTimerFunc(1000, frameCounter, 0);
-}
-
 App::App(int argc, char** argv, int width, int height, const char* title): GlutApp(argc, argv, width, height, title){
+    //when a key is pressed, the key only triggers one event
+    glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
     game = new Game();
     frames = 0;
     singleton = this;
-    frameCounter(0);
 } 
-
-
 
 void App::draw() const {
     game->draw();
@@ -25,8 +17,6 @@ void App::draw() const {
 
 void App::idle(){
     game->idle();
-    redraw();
-    frames++;
 }
 
 void App::keyDown(unsigned char key, float x, float y){

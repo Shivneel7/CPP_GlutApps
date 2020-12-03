@@ -1,11 +1,8 @@
 #pragma once
 
-#include "MovingTexRect.h"
+#include "MovingSprite.h"
 
-class Player : public MovingTexRect {
-    const float BASE_SPEED;
-    float dx, dy, speed;
-
+class Player : public MovingSprite {
     // facing left is 1, facing right is 0;
     bool direction;
 
@@ -13,6 +10,7 @@ class Player : public MovingTexRect {
     Player();
 
     void draw(float z = 0) const;
+    void idle();
     void jump();
 
     // facing left is 1, facing right is 0;

@@ -1,7 +1,7 @@
 #include "Text.h"
 #include "GlutApp.h"
 
-Text::Text(float x, float y, std::string text, float r, float g, float b) :Rect(x, y, 0, 0, r, g, b), text(text), font(GLUT_BITMAP_TIMES_ROMAN_24), windowW(600), windowH(600) {
+Text::Text(float x, float y, std::string text, float r, float g, float b) : Rect(x, y, 0, 0, r, g, b), text(text), font(GLUT_BITMAP_TIMES_ROMAN_24), windowW(600), windowH(600) {
 }
 
 void Text::draw(float z) const {
@@ -14,4 +14,8 @@ void Text::draw(float z) const {
         glutBitmapCharacter(font, text[i]);
         offset += (2 * (float)glutBitmapWidth(font, text[i]) / windowW);
     }
+}
+
+void Text::setText(std::string t) {
+    text = t;
 }

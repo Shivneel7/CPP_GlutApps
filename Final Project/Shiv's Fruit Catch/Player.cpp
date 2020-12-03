@@ -1,6 +1,7 @@
 #include "Player.h"
+#include "iostream"
 
-Player::Player() : MovingTexRect("player-idle.png", -.1, -.72, .3, .3, 0, 0, .01), direction(0), BASE_SPEED(.01){
+Player::Player() : MovingSprite("player-idle.png", 1, 1, -.1, -.72, .3, .3, 0, 0, player), direction(0){
 }
 
 void Player::draw(float z) const {
@@ -40,9 +41,19 @@ void Player::draw(float z) const {
     glDisable(GL_TEXTURE_2D);
 }
 
-void Player::jump() {
+void Player::idle() {
+    x += dx;
+    y += dy;
+    dy -= .001;
+    if (y < -.7) {
+        y = -.7;
+    }
 }
 
-void Player::setDirection(bool b){
+void Player::jump() {
+    dy = .02;
+}
+
+void Player::setDirection(bool b) {
     direction = b;
 }

@@ -29,6 +29,7 @@ void Ship::idle(){
 void Ship::keyDown(unsigned char key, float x, float y) {
     if(key == 'w'){
         dy += speed;
+        std::cout<< dx << std::endl;
 
     }else if(key == 'a'){
         dx += -speed;

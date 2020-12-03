@@ -3,6 +3,7 @@
 #include "TexRect.h"
 
 class Sprite : public TexRect {
+  protected:
     int rows;
     int cols;
 
@@ -22,7 +23,7 @@ class Sprite : public TexRect {
   public:
     Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h);
 
-    void draw(float z = 0) const;
+    virtual void draw(float z = 0) const;
 
     bool isDone() const;
 

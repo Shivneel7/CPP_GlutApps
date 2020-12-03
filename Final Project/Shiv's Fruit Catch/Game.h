@@ -1,19 +1,25 @@
 #pragma once
 
+#include "Fruit.h"
+#include "MovingSprite.h"
+#include "Player.h"
 #include "Sprite.h"
 #include "TexRect.h"
 #include "Text.h"
-#include "Player.h"
-#include "MovingTexRect.h"
 #include <vector>
 
 class Game {
-    std::vector<Shape *> shapes;
-    std::vector<MovingTexRect *> movingShapes;
+    static const float PLAYER_BASE_SPEED;
+
+    std::vector<Rect*> hud;
+    std::vector<MovingSprite *> objects;
 
     Player *player;
-    Sprite *explosion;
+    TexRect* test;
 
+    Text* s;
+    int score;
+    
   public:
     Game();
 
@@ -24,9 +30,9 @@ class Game {
     void keyUp(unsigned char key, float x, float y);
     void specialKeyUp(int key, float x, float y);
     void idle();
-    
-    friend void explosionTimer(int id);
-    friend void timer(int id);
+
+    friend void gameLoop(int id);
+    friend void spawnBanana(int id);
 
     ~Game();
 };
