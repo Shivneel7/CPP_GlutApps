@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Fruit.h"
 #include "MovingSprite.h"
 #include "Player.h"
 #include "Sprite.h"
@@ -30,8 +29,10 @@ class Game {
     void specialKeyUp(int key, float x, float y);
     void idle();
 
+    void createFruit();
+
     friend void gameLoop(int id);
-    friend void spawnBanana(int id);
+    friend void spawnFruit(int id);
 
     ~Game();
 };
