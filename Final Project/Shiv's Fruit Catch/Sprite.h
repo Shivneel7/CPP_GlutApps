@@ -23,8 +23,8 @@ class Sprite : public TexRect {
   public:
     Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h);
 
-    Sprite(const char *filename, int rows, int cols, float l, float r, float x, float y, float w, float h);
-    
+    // Sprite(const char *filename, int rows, int cols, float l, float r, float x, float y, float w, float h);
+
     virtual void draw(float z = 0) const;
 
     bool isDone() const;

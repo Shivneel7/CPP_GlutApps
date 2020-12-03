@@ -14,26 +14,30 @@ void frameCounter(int id) {
 }
 
 void gameLoop(int id) {
-    singleton->player->idle();
-    // singleton->explosion->setX(singleton->player->getX());
-    // singleton->explosion->advance();
-
-    // std::vector<MovingSprite *>::iterator end = singleton->objects.end();
+    // singleton->player->idle();
     for (auto i = singleton->objects.begin(); i != singleton->objects.end();) {
+        bool shouldIncrement = true;
+        // std::cout << "idle: " << (*i)->getID() << std::endl;
         (*i)->idle();
+
         if ((*i)->getID() == fruit) {
+
             if (singleton->player->contains((*i)->getX(), (*i)->getY())) {
                 singleton->score++;
                 singleton->s->setText("Score: " + std::to_string(singleton->score));
 
                 delete (*i);
                 i = singleton->objects.erase(i);
+                shouldIncrement = false;
             } else if ((*i)->getY() < -1.5) {
                 delete (*i);
                 i = singleton->objects.erase(i);
-            } else {
-                ++i;
+                shouldIncrement = false;
+
             }
+        }
+        if(shouldIncrement){
+            ++i;
         }
     }
 
@@ -57,7 +61,7 @@ void Game::createFruit() {
     srand(time(NULL));
 
     float fruitX = (rand() % 190) / 100.0 - 1.0;
-    
+
     switch (rand() % 3) {
     case 0:
         objects.push_back(new MovingSprite("apple.png", 1, 1, fruitX, 1, .1, .1, 0, -.01, fruit));
@@ -72,12 +76,15 @@ void Game::createFruit() {
 
 Game::Game() {
     score = 0;
-    // explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.25, 0.25);
+
     player = new Player();
+    objects.push_back(player);
 
+    // TODO FIX THE TEXT
     s = new Text(0, 0, "score: 0", 0, 0, 1);
-
-    // shapes.push_back(explosion);
+    
+    hud.push_back(s);
+    hud.push_back(new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.25, 0.25));
     singleton = this;
 
     gameLoop(0);
@@ -104,7 +111,7 @@ void Game::keyDown(unsigned char key, float x, float y) {
         player->jump();
     }
 
-    std::cout << key << std::endl;
+    // std::cout << key << std::endl;
 }
 
 void Game::keyUp(unsigned char key, float x, float y) {
@@ -131,13 +138,13 @@ void Game::specialKeyUp(int key, float x, float y) {
 }
 
 void Game::draw() const {
-    player->draw();
-    s->draw(1);
+    // player->draw();
     for (auto i = objects.begin(); i != objects.end(); i++) {
+        // std::cout << "draw: " << (*i)->getID() << std::endl;
         (*i)->draw();
     }
     for (auto i = hud.begin(); i != hud.end(); i++) {
-        (*i)->draw();
+        (*i)->draw(1);
     }
 }
 
@@ -148,5 +155,4 @@ Game::~Game() {
     for (auto i = hud.begin(); i != hud.end(); i++) {
         delete *i;
     }
-    delete player;
 }

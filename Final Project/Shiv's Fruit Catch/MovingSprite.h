@@ -14,6 +14,7 @@ class MovingSprite : public Sprite {
     MovingSprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float dx, float dy, ID id);
 
     virtual void idle();
+    // virtual void draw(float z) const;
 
     void setDX(float dx);
     float getDX() const;
