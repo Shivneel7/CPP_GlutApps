@@ -1,10 +1,19 @@
 #pragma once
 
-#include "MovingSprite.h"
+#include "MovingTexRect.h"
 
-class Player : public MovingSprite {
+/** A Moving Sprite object with added functionality:
+ * 
+ * has a modified idle so that player can jump and is affected by gravity
+ *
+ * players sprite behaves a bit differently than other sprites
+ *
+ * "holds" a basket (contains a pointer to another MovingSprite so that only
+ *  the basket portion of the player model collects fruit)
+ */
+class Player : public MovingTexRect {
 
-    MovingSprite* basket;
+    MovingTexRect *basket;
 
     // facing left is 1, facing right is 0;
     bool direction;

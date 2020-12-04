@@ -4,6 +4,8 @@
 #include "Rect.h"
 #include <string>
 
+/**A rectangle that displays a string of text
+ */
 class Text : public Rect {
     std::string text;
     int windowW, windowH;

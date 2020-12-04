@@ -1,8 +1,11 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player() : MovingSprite("skeleton1.png", 1, 1, -.1, -.62, .3, .4, 0, 0, player), direction(0), isFaster(0), basket(new MovingSprite("basket1.png", 1, 1, -.1, -.72, .3, .1, 0, 0, defaultID)) {
-    
+Player::Player() : MovingTexRect("skeleton1.png", -.1, -.62, .3, .4, 0, 0, player), direction(0), isFaster(0), basket(new MovingTexRect("basket1.png", -.1, -.72, .3, .1, 0, 0, defaultID)) {
+    // left = 0.05;
+    // right = .27;
+    // top = .3;
+    // bottom = 0;
 }
 
 void Player::draw(float z) const {
@@ -40,7 +43,6 @@ void Player::draw(float z) const {
 
     //~~~~~~~~~~~~~~~~~~~~~~~TEST-----------=============
 
-    // Shows half the player with the full box. to see half the player correctly sized, make w = w/2
     glColor4f(1, 1, 1, 1);
     glTexCoord2f(0.05, 0);
     glVertex3f(x, y - h, z);
@@ -57,6 +59,9 @@ void Player::draw(float z) const {
 
     glDisable(GL_TEXTURE_2D);
 
+    // basket->draw();
+
+    // MovingTexRect::draw();
     basket->draw();
 }
 

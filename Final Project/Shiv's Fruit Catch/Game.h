@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MovingSprite.h"
+#include "MovingTexRect.h"
 #include "Player.h"
 #include "Sprite.h"
 #include "TexRect.h"
@@ -11,7 +11,7 @@ class Game {
     static const float PLAYER_BASE_SPEED;
 
     std::vector<Rect*> hud;
-    std::vector<MovingSprite *> objects;
+    std::vector<MovingTexRect *> objects;
 
     TexRect* bg;
     Player *player;

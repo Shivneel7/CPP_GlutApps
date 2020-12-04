@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h) : TexRect(filename, x, y, w, h) {
+Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h) : MovingTexRect(filename, x, y, w, h, 0, 0, defaultID) {
     this->rows = rows;
     this->cols = cols;
 
@@ -18,29 +18,11 @@ Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float
     done = false;
 }
 
-// Sprite::Sprite(const char *filename, int rows, int cols, float l, float r, float x, float y, float w, float h) : TexRect(filename, x, y, w, h) {
-//     this->rows = rows;
-//     this->cols = cols;
-
-//     xinc = 1.0 / cols;
-//     yinc = 1.0 / rows;
-
-//     curr_row = 1;
-//     curr_col = 1;
-
-//     left = xinc * (curr_col - 1);
-//     right = xinc * curr_col;
-//     top = 1 - yinc * (curr_row - 1);
-//     bottom = 1 - yinc * curr_row;
-
-//     done = false;
-// }
-
 bool Sprite::isDone() const {
     return done;
 }
 
-void Sprite::draw(float z) const{
+void Sprite::draw(float z) const {
     glBindTexture(GL_TEXTURE_2D, texture_id);
     glEnable(GL_TEXTURE_2D);
 
@@ -67,6 +49,10 @@ void Sprite::reset() {
     curr_row = 1;
     curr_col = 1;
     done = false;
+}
+
+void Sprite::idle(){
+    advance();
 }
 
 void Sprite::advance() {

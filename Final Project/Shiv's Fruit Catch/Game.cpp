@@ -64,13 +64,13 @@ void Game::createFruit() {
 
     switch (rand() % 3) {
     case 0:
-        objects.push_back(new MovingSprite("apple.png", 1, 1, fruitX, 1, .1, .1, 0, -.01, fruit));
+        objects.push_back(new MovingTexRect("apple.png", fruitX, 1, .1, .1, 0, -.01, fruit));
         break;
     case 1:
-        objects.push_back(new MovingSprite("banana.png", 1, 1, fruitX, 1, .1, .1, 0, -.01, fruit));
+        objects.push_back(new MovingTexRect("banana.png", fruitX, 1, .1, .1, 0, -.01, fruit));
         break;
     case 2:
-        objects.push_back(new MovingSprite("mango.png", 1, 1, fruitX, 1, .1, .1, 0, -.01, fruit));
+        objects.push_back(new MovingTexRect("mango.png",  fruitX, 1, .1, .1, 0, -.01, fruit));
     }
 }
 
@@ -86,8 +86,8 @@ Game::Game() {
     s = new Text(0, 0, "Score: 0 Lost: 0" , 0, 0, 1);
 
     hud.push_back(s);
-    hud.push_back(new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.25, 0.25));
-    bg= new Sprite("background.png", 1,1,-1, 1, 2, 2);
+    // objects.push_back(new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.25, 0.25));
+    bg = new Sprite("background.png", 1,1,-1, 1, 2, 2);
     singleton = this;
 
     gameLoop(0);
