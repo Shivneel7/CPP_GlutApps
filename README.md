@@ -13,3 +13,8 @@ Install freeglut: sudo apt install freeglut3-dev
 Install xming (https://sourceforge.net/projects/xming/)
 
 Set display environment variable: echo "export DISPLAY=localhost:0.0" >> ~/.bashrc
+
+Once done, make sure you open xming, and then open linux terminal and run:
+
+make
+./glutapp
