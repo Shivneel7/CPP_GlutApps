@@ -1,5 +1,5 @@
 # CPP_GlutApps
-Apps built with FreeGlu (http://freeglut.sourceforge.net/) for CSE 165 Intro to OO programming at UCMerced.
+Apps built with FreeGlut (http://freeglut.sourceforge.net/) for CSE 165 Intro to OO programming at UCMerced.
 
 Includes: 
   - Shiv's Fruit Catch: Custom Game built by Shivneel Chand
