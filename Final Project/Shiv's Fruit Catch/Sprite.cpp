@@ -18,6 +18,24 @@ Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float
     done = false;
 }
 
+Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float dx, float dy, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {
+    this->rows = rows;
+    this->cols = cols;
+
+    xinc = 1.0 / cols;
+    yinc = 1.0 / rows;
+
+    curr_row = 1;
+    curr_col = 1;
+
+    left = xinc * (curr_col - 1);
+    right = xinc * curr_col;
+    top = 1 - yinc * (curr_row - 1);
+    bottom = 1 - yinc * curr_row;
+
+    done = false;
+}
+
 bool Sprite::isDone() const {
     return done;
 }

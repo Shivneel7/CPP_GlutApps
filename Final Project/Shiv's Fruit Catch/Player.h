@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MovingTexRect.h"
+#include "Sprite.h"
 
 /** A Moving Sprite object with added functionality:
  * 
@@ -11,13 +11,14 @@
  * "holds" a basket (contains a pointer to another MovingSprite so that only
  *  the basket portion of the player model collects fruit)
  */
-class Player : public MovingTexRect {
+class Player : public Sprite {
 
     MovingTexRect *basket;
 
     // facing left is 1, facing right is 0;
-    bool direction;
-    bool isFaster;
+    bool facingLeft;
+    bool speedBoost;
+    bool moving;
 
   public:
     Player();
@@ -25,9 +26,11 @@ class Player : public MovingTexRect {
     void draw(float z = 0) const;
     void idle();
     void jump();
-
+    void advance();
     // facing left is 1, facing right is 0;
-    void setDirection(bool b);
+    void setIsFacingLeft(bool b);
     void setIsFaster(bool b);
+    bool isMoving();
+
     bool checkBasketCollision(const Rect &two);
 };

@@ -4,7 +4,7 @@
 #include <time.h>
 
 static Game *singleton;
-const float Game::PLAYER_BASE_SPEED = .015;
+const float Game::PLAYER_BASE_SPEED = .02;
 
 int frames = 0;
 void frameCounter(int id) {
@@ -59,6 +59,12 @@ void spawnFruit(int id) {
     glutTimerFunc(500, spawnFruit, id);
 }
 
+void animation(int id) {
+    singleton->player->advance();
+
+    glutTimerFunc(100, animation, id);
+}
+
 void Game::createFruit() {
     float fruitX = (rand() % 190) / 100.0 - 1.0;
 
@@ -70,7 +76,7 @@ void Game::createFruit() {
         objects.push_back(new MovingTexRect("banana.png", fruitX, 1, .1, .1, 0, -.01, fruit));
         break;
     case 2:
-        objects.push_back(new MovingTexRect("mango.png",  fruitX, 1, .1, .1, 0, -.01, fruit));
+        objects.push_back(new MovingTexRect("mango.png", fruitX, 1, .1, .1, 0, -.01, fruit));
     }
 }
 
@@ -83,18 +89,21 @@ Game::Game() {
     objects.push_back(player);
 
     // TODO FIX THE TEXT
-    s = new Text(0, 0, "Score: 0 Lost: 0" , 0, 0, 1);
+    s = new Text(0, 0, "Score: 0 Lost: 0", 0, 0, 1);
 
     hud.push_back(s);
-    // objects.push_back(new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.25, 0.25));
-    bg = new Sprite("background.png", 1,1,-1, 1, 2, 2);
-    singleton = this;
+    // test = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.25, 0.25);
+    // test2 = new Sprite("mario.png", 10, 8, -0.8, 0.8, 0.25, 0.25);
 
+    bg = new Sprite("background.png", 1, 1, -1, 1, 2, 2);
+    singleton = this;
     gameLoop(0);
-    spawnFruit(2);
+    spawnFruit(1);
 
     // prints fps of the game every second
-    frameCounter(1);
+    frameCounter(2);
+
+    animation(3);
 }
 
 void Game::idle() {
@@ -103,12 +112,12 @@ void Game::idle() {
 void Game::keyDown(unsigned char key, float x, float y) {
     if (key == 'a' || key == 'A') {
         player->setDX(player->getDX() - PLAYER_BASE_SPEED);
-        player->setDirection(1);
+        player->setIsFacingLeft(1);
 
     } else if (key == 'd' || key == 'D') {
 
         player->setDX(player->getDX() + PLAYER_BASE_SPEED);
-        player->setDirection(0);
+        player->setIsFacingLeft(0);
 
     } else if (key == 'w' || key == 'W') {
         player->jump();
@@ -142,6 +151,7 @@ void Game::specialKeyUp(int key, float x, float y) {
 
 void Game::draw() const {
     bg->draw();
+    // test2->draw();
     for (auto i = objects.begin(); i != objects.end(); i++) {
         // std::cout << "draw: " << (*i)->getID() << std::endl;
         (*i)->draw();

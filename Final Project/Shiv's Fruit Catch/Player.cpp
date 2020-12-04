@@ -1,11 +1,9 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player() : MovingTexRect("skeleton1.png", -.1, -.62, .3, .4, 0, 0, player), direction(0), isFaster(0), basket(new MovingTexRect("basket1.png", -.1, -.72, .3, .1, 0, 0, defaultID)) {
-    // left = 0.05;
-    // right = .27;
-    // top = .3;
-    // bottom = 0;
+Player::Player() : Sprite("mario.png", 10, 8, -.1, -.62, .3, .4, 0, 0, player), facingLeft(0), speedBoost(0), basket(new MovingTexRect("basket1.png", -.1, -.72, .1, .1, 0, 0, defaultID)) {
+    left = 0;
+    right = 0.125;
 }
 
 void Player::draw(float z) const {
@@ -13,6 +11,42 @@ void Player::draw(float z) const {
     glEnable(GL_TEXTURE_2D);
 
     glBegin(GL_QUADS);
+
+    /////////////mario.png//////////////////
+    glColor4f(1, 1, 1, 1);
+
+    if (facingLeft) {
+        glTexCoord2f(left, .1);
+        glVertex3f(x, y - h, z);
+
+        glTexCoord2f(left, .2);
+        glVertex3f(x, y, z);
+
+        glTexCoord2f(right, .2);
+        glVertex3f(x + w, y, z);
+
+        glTexCoord2f(right, 0.1);
+        glVertex3f(x + w, y - h, z);
+    } else {
+        glTexCoord2f(right, 0.1);
+        glVertex3f(x, y - h, z);
+
+        glTexCoord2f(right, .2);
+        glVertex3f(x, y, z);
+
+        glTexCoord2f(left, .2);
+        glVertex3f(x + w, y, z);
+
+        glTexCoord2f(left, .1);
+        glVertex3f(x + w, y - h, z);
+    }
+
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+    basket->draw();
+
+    // player-idle.png
     // glColor4f(1, 1, 1, 1);
 
     // if (!direction) {
@@ -43,33 +77,66 @@ void Player::draw(float z) const {
 
     //~~~~~~~~~~~~~~~~~~~~~~~TEST-----------=============
 
-    glColor4f(1, 1, 1, 1);
-    glTexCoord2f(0.05, 0);
-    glVertex3f(x, y - h, z);
+    // skeleton1.png
+    // glColor4f(1, 1, 1, 1);
+    // glTexCoord2f(0.05, 0);
+    // glVertex3f(x, y - h, z);
 
-    glTexCoord2f(0.05, .3);
-    glVertex3f(x, y, z);
+    // glTexCoord2f(0.05, .3);
+    // glVertex3f(x, y, z);
 
-    glTexCoord2f(.27, .3);
-    glVertex3f(x + w, y, z);
+    // glTexCoord2f(.27, .3);
+    // glVertex3f(x + w, y, z);
 
-    glTexCoord2f(.27, 0);
-    glVertex3f(x + w, y - h, z);
-    glEnd();
+    // glTexCoord2f(.27, 0);
+    // glVertex3f(x + w, y - h, z);
+    // glEnd();
 
-    glDisable(GL_TEXTURE_2D);
+    // glDisable(GL_TEXTURE_2D);
 
     // basket->draw();
 
     // MovingTexRect::draw();
-    basket->draw();
+
+    /////////////player2.png//////////////////
+
+    // glColor4f(1, 1, 1, 1);
+    // glTexCoord2f(0, 0);
+    // glVertex3f(x, y - h, z);
+
+    // glTexCoord2f(0, .99);
+    // glVertex3f(x, y, z);
+
+    // glTexCoord2f(.5, .99);
+    // glVertex3f(x + w, y, z);
+
+    // glTexCoord2f(.5, 0);
+    // glVertex3f(x + w, y - h, z);
+    // glEnd();
+
+    // glDisable(GL_TEXTURE_2D);
+}
+
+void Player::advance() {
+    left += .125;
+    right += .125;
+    if (right > 1 || !moving) {
+        left = 0;
+        right = .125;
+    }
 }
 
 void Player::idle() {
     x += dx;
 
-    if (isFaster) {
+    if (speedBoost) {
         x += dx;
+    }
+
+    if (dx != 0) {
+        moving = true;
+    } else {
+        moving = false;
     }
 
     if (x < -1) {
@@ -83,23 +150,29 @@ void Player::idle() {
     if (y < -.6) {
         y = -.6;
     }
-    basket->setX(x);
-    basket->setY(y-.125);
+    if (facingLeft) {
+        basket->setX(x - .1);
 
+    } else
+        basket->setX(x + .25);
+    basket->setY(y - .125);
 }
 
 void Player::jump() {
     dy = .02;
 }
 
-void Player::setDirection(bool b) {
-    direction = b;
+void Player::setIsFacingLeft(bool b) {
+    facingLeft = b;
 }
 
 void Player::setIsFaster(bool b) {
-    isFaster = b;
+    speedBoost = b;
 }
 
+bool Player::isMoving() {
+    return moving;
+}
 bool Player::checkBasketCollision(const Rect &two) {
     basket->checkCollision(two);
 }

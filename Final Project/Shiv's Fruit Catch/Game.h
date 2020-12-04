@@ -15,6 +15,10 @@ class Game {
 
     TexRect* bg;
     Player *player;
+    
+    Sprite* test;
+    Sprite* test2;
+    Sprite* test3;
 
     Text* s;
     int score, lost;
@@ -34,6 +38,7 @@ class Game {
 
     friend void gameLoop(int id);
     friend void spawnFruit(int id);
+    friend void animation(int id);
 
     ~Game();
 };

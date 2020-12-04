@@ -16,8 +16,12 @@ class Sprite : public MovingTexRect {
     float xinc;
     float yinc;
 
+    //which row/column to get subImage from
+    
     int curr_row;
     int curr_col;
+
+    //where on the png file we get the current image
 
     float left;
     float right;
@@ -28,6 +32,7 @@ class Sprite : public MovingTexRect {
 
   public:
     Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h);
+    Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float, float, ID);
 
     virtual void draw(float z = 0) const;
     virtual void idle();
@@ -36,7 +41,7 @@ class Sprite : public MovingTexRect {
 
     void reset();
 
-    void advance();
+    virtual void advance();
 
     ~Sprite() {
     }
