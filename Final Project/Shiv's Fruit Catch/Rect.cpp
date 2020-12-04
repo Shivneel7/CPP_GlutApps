@@ -51,7 +51,27 @@ float Rect::getX() const {
 	return x;
 }
 
+void Rect::setW(float w){
+	this-> w = w;
+}
+
+void Rect::setH(float h){
+	this-> h = h;
+}
+
+float Rect::getW() const {
+	return w;
+}
+
+float Rect::getH() const {
+	return h;
+}
+
 bool Rect::contains(float x, float y) const{
 	return x >= this->x && x <= this->x + w && y <= this->y && y >= this->y - h;
 }
 
+bool Rect::checkCollision(const Rect& two) const{
+    return  (this->getX() < (two.getX() + two.getW()) && two.getX() < (this->getX() + this->getW())) &&
+            (this->getY() > (two.getY() - two.getH()) && two.getY() > (this->getY() - this->getH()));
+}

@@ -13,10 +13,11 @@ class Game {
     std::vector<Rect*> hud;
     std::vector<MovingSprite *> objects;
 
+    TexRect* bg;
     Player *player;
 
     Text* s;
-    int score;
+    int score, lost;
     
   public:
     Game();

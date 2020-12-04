@@ -3,9 +3,13 @@
 #include "MovingSprite.h"
 
 class Player : public MovingSprite {
+
+    MovingSprite* basket;
+
     // facing left is 1, facing right is 0;
     bool direction;
     bool isFaster;
+
   public:
     Player();
 
@@ -16,4 +20,5 @@ class Player : public MovingSprite {
     // facing left is 1, facing right is 0;
     void setDirection(bool b);
     void setIsFaster(bool b);
+    bool checkBasketCollision(const Rect &two);
 };

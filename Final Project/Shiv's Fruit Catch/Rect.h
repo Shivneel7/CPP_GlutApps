@@ -23,9 +23,14 @@ public:
 	float getY() const;
 	float getX() const;
 	void setX(float x);
-
+	void setW(float);
+	float getW() const;
+	float getH() const;
+	void setH(float);
 
 	bool contains(float, float) const;
+
+	bool checkCollision(const Rect& r) const;
 };
 
 #endif

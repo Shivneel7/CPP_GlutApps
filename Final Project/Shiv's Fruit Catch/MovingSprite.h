@@ -2,7 +2,7 @@
 
 #include "Sprite.h"
 
-enum ID { fruit, bomb, player };
+enum ID { fruit, bomb, player, defaultID};
 
 // This is a base class for any object that moves
 class MovingSprite : public Sprite {

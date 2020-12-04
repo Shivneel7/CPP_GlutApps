@@ -4,7 +4,7 @@
 #include <time.h>
 
 static Game *singleton;
-const float Game::PLAYER_BASE_SPEED = .02;
+const float Game::PLAYER_BASE_SPEED = .015;
 
 int frames = 0;
 void frameCounter(int id) {
@@ -22,21 +22,23 @@ void gameLoop(int id) {
 
         if ((*i)->getID() == fruit) {
 
-            if (singleton->player->contains((*i)->getX(), (*i)->getY())) {
+            if (singleton->player->checkBasketCollision(*(*i))) {
                 singleton->score++;
-                singleton->s->setText("Score: " + std::to_string(singleton->score));
+                singleton->s->setText("Score: " + std::to_string(singleton->score) + " Lost: " + std::to_string(singleton->lost));
 
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
-            } else if ((*i)->getY() < -1.5) {
+
+            } else if ((*i)->getY() < -1) { // Fruit left the screen
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
-
+                singleton->lost++;
+                singleton->s->setText("Score: " + std::to_string(singleton->score) + " Lost: " + std::to_string(singleton->lost));
             }
         }
-        if(shouldIncrement){
+        if (shouldIncrement) {
             ++i;
         }
     }
@@ -54,12 +56,10 @@ void gameLoop(int id) {
 
 void spawnFruit(int id) {
     singleton->createFruit();
-    glutTimerFunc(1000, spawnFruit, id);
+    glutTimerFunc(500, spawnFruit, id);
 }
 
 void Game::createFruit() {
-    srand(time(NULL));
-
     float fruitX = (rand() % 190) / 100.0 - 1.0;
 
     switch (rand() % 3) {
@@ -75,16 +75,19 @@ void Game::createFruit() {
 }
 
 Game::Game() {
-    score = 0;
+    srand(time(NULL));
 
+    score = 0;
+    lost = 0;
     player = new Player();
     objects.push_back(player);
 
     // TODO FIX THE TEXT
-    s = new Text(0, 0, "score: 0", 0, 0, 1);
-    
+    s = new Text(0, 0, "Score: 0 Lost: 0" , 0, 0, 1);
+
     hud.push_back(s);
     hud.push_back(new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.25, 0.25));
+    bg= new Sprite("background.png", 1,1,-1, 1, 2, 2);
     singleton = this;
 
     gameLoop(0);
@@ -138,13 +141,13 @@ void Game::specialKeyUp(int key, float x, float y) {
 }
 
 void Game::draw() const {
-    // player->draw();
+    bg->draw();
     for (auto i = objects.begin(); i != objects.end(); i++) {
         // std::cout << "draw: " << (*i)->getID() << std::endl;
         (*i)->draw();
     }
     for (auto i = hud.begin(); i != hud.end(); i++) {
-        (*i)->draw(1);
+        (*i)->draw(.5);
     }
 }
 
