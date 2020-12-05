@@ -1,10 +1,13 @@
 
 
 Game:
+    Make info bg that appears pre game. press space to continue type beat
+    Make Proper Bar Class
     HUD:
         health
         score
-    
+        SPEED
+
     Upgrades:
         SpeedBoost gets recharged by speed fruit
         Bigger Basket upgrade using mario mushroom, or by picking up a bigger basket.
