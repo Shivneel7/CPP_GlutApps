@@ -40,7 +40,7 @@ void gameLoop(int id) {
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
 
-            } else if ((*i)->getY() < -1) { // Fruit left the screen
+            } else if ((*i)->getY() < -.75) { // Fruit left the screen
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
@@ -50,17 +50,17 @@ void gameLoop(int id) {
         }
 
         if ((*i)->getID() == bomb) {
-            if (singleton->player->checkBasketCollision(*(*i)) || singleton->player->checkCollision(*(*i))) {
+            if (/*singleton->player->checkBasketCollision(*(*i)) || */singleton->player->checkCollision(*(*i))) {
 
                 singleton->showExplosion = true;
                 animation2(4);
 
-                std::cout << "BOOOOOOOOOOOOOOOM" << std::endl;
+                // std::cout << "BOOOOOOOOOOOOOOOM" << std::endl;
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
 
-            } else if ((*i)->getY() < -1) { // Bomb left the screen
+            } else if ((*i)->getY() < -.7) { // Bomb left the screen
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
@@ -90,6 +90,8 @@ void spawnFruit(int id) {
 }
 
 void animation(int id) {
+    // singleton->test2->advance();
+
     singleton->player->advance();
     glutTimerFunc(100, animation, id);
 }
@@ -97,7 +99,7 @@ void animation(int id) {
 void Game::createFruit() {
     float fruitX = (rand() % 190) / 100.0 - 1.0;
 
-    switch (rand() % 5) {
+    switch (rand() % 4) {
     case 0:
         objects.push_back(new MovingTexRect("apple.png", fruitX, 1, .1, .1, 0, -.01, fruit));
         break;
@@ -108,10 +110,10 @@ void Game::createFruit() {
         objects.push_back(new MovingTexRect("mango.png", fruitX, 1, .1, .1, 0, -.01, fruit));
         break;
     case 3:
-        objects.push_back(new MovingTexRect("bomb.png", fruitX, 1, .2, .2, 0, -.01, bomb));
+        objects.push_back(new MovingTexRect("bomb.png", fruitX, 1, .15, .15, 0, -.01, bomb));
         break;
     case 4:
-        objects.push_back(new MovingTexRect("bomb.png", fruitX, 1, .2, .2, 0, -.01, bomb));
+        objects.push_back(new MovingTexRect("bomb.png", fruitX, 1, .15, .15, 0, -.01, bomb));
     }
 }
 
@@ -128,9 +130,9 @@ Game::Game() {
 
     hud.push_back(s);
     explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.3, 0.4);
-    // test2 = new Sprite("mario.png", 10, 8, -0.8, 0.8, 0.25, 0.25);
+    // test2 = new Sprite("enemy.png", 1, 22, -0.8, 0.8, 0.25, 0.25);
 
-    bg = new Sprite("background.png", 1, 1, -1, 1, 2, 2);
+    bg = new Sprite("bg.png", 1, 1, -1, 1, 2, 2);
     singleton = this;
     gameLoop(0);
     spawnFruit(1);
@@ -186,6 +188,7 @@ void Game::specialKeyUp(int key, float x, float y) {
 
 void Game::draw() const {
     bg->draw();
+    // test2->draw();
     for (auto i = objects.begin(); i != objects.end(); i++) {
         // std::cout << "draw: " << (*i)->getID() << std::endl;
         (*i)->draw();

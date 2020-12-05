@@ -1,0 +1,1 @@
+//have a texture, the "right" attribute depletes with time.

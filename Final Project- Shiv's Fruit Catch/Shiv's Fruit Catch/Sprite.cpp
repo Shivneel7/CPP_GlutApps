@@ -69,10 +69,6 @@ void Sprite::reset() {
     done = false;
 }
 
-void Sprite::idle(){
-    advance();
-}
-
 void Sprite::advance() {
     if (curr_col < cols) {
         curr_col++;

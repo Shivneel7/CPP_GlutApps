@@ -35,7 +35,6 @@ class Sprite : public MovingTexRect {
     Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float, float, ID);
 
     virtual void draw(float z = 0) const;
-    virtual void idle();
 
     bool isDone() const;
 
