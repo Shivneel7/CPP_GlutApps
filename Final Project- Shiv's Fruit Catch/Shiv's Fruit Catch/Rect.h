@@ -29,7 +29,6 @@ public:
 	void setH(float);
 
 	bool contains(float, float) const;
-
 };
 
 #endif

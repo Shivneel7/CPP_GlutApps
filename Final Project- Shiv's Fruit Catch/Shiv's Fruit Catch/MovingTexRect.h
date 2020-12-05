@@ -21,8 +21,9 @@ class MovingTexRect : public TexRect {
     ID id;
 
   public:
-    MovingTexRect(const char *filename, float x, float y, float w, float h, float dx, float dy, ID id);
 
+    MovingTexRect(const char *filename, float x, float y, float w, float h, float dx, float dy, ID id);
+    
     virtual void idle();
 
     virtual bool checkCollision(const Rect &r) const;

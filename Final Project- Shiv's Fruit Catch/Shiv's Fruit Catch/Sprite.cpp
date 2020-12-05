@@ -1,10 +1,16 @@
 #include "Sprite.h"
 
+Sprite::Sprite(const char *filename, float x, float y, float w, float h) :MovingTexRect(filename, x, y, w, h, dx, dy, defaultID){
+    rows = 1;
+    cols = 1;
+
+    reset();
+}
+
 Sprite::Sprite(const char *filename, float x, float y, float w, float h, float dx, float dy, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {
     rows = 1;
     cols = 1;
-    xinc = 1.0 / cols;
-    yinc = 1.0 / rows;
+
     reset();
 }
 
@@ -13,9 +19,6 @@ Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float
     this->cols = cols;
     this->loop = l;
 
-    xinc = 1.0 / cols;
-    yinc = 1.0 / rows;
-
     reset();
 }
 
@@ -23,9 +26,6 @@ Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float
     this->rows = rows;
     this->cols = cols;
     this->loop = l;
-
-    xinc = 1.0 / cols;
-    yinc = 1.0 / rows;
 
     reset();
 }
@@ -58,6 +58,8 @@ void Sprite::draw(float z) const {
 }
 
 void Sprite::reset() {
+    xinc = 1.0 / cols;
+    yinc = 1.0 / rows;
     done = false;
     left = 0;
     right = xinc;

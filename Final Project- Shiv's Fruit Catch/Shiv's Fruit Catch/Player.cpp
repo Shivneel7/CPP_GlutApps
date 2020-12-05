@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player(bool debug) : Sprite("player.png", 1, 8, -.1, -.62, .25, .3, 0, 0, true, player), debugMode(debug), facingLeft(0), speedBoost(0), basket(new MovingTexRect("basket.png", -.1, -.72, .2, .1, 0, 0, defaultID)), jumping(false), invulnerable(0), showPlayer(true), invulnerableCount(0), bounds(new Rect(x, y, w, h)) {
+Player::Player(bool debug) : Sprite("player.png", 1, 8, -.1, -.62, .25, .3, 0, 0, true, player), basket(new MovingTexRect("basket.png", -.1, -.72, .2, .1, 0, 0, defaultID)), bounds(new Rect(x, y, w, h)), debugMode(debug), facingLeft(0), speedBoost(0), jumping(0), invulnerable(0), showPlayer(1), invulnerableCount(0){
     bounds->setW(.125);
     bounds->setH(.2);
 }
@@ -165,4 +165,9 @@ bool Player::checkBasketCollision(const Rect &two) {
 
 bool Player::checkBasketContains(float x, float y) {
     return basket->contains(x, y);
+}
+
+Player::~Player() {
+    delete bounds;
+    delete basket;
 }

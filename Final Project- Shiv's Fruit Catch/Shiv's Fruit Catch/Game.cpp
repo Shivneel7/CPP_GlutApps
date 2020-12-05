@@ -7,6 +7,7 @@ static Game *singleton;
 const float Game::PLAYER_BASE_SPEED = .02;
 
 int frames = 0;
+
 void frameCounter(int id) {
     std::cout << "FPS: " << frames << std::endl;
     frames = 0;
@@ -54,10 +55,9 @@ void gameLoop(int id) {
 
                 singleton->showExplosion = true;
                 explosionAnimation(4);
-                
 
-                ////////////////HEalth --
-
+                singleton->hud->decreaseHealth();
+                std::cout << "Lose Health" << std::endl;
 
                 delete (*i);
                 i = singleton->objects.erase(i);
@@ -80,9 +80,11 @@ void gameLoop(int id) {
             if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()) {
                 singleton->player->setInvulnerable(true);
 
-                ////////////////////////////Health --
+                std::cout << "Lose Health" << std::endl;
+                singleton->hud->decreaseHealth();
             }
-            if ((*i)->getX() < -1.2 || (*i)->getX() > 1.2) {
+
+            if ((*i)->getX() < -1.2 || (*i)->getX() > 1.2) { // shell left play area
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
@@ -102,15 +104,14 @@ void gameLoop(int id) {
     glutTimerFunc(1000.0 / 60, gameLoop, id);
 }
 
+void playerAnimation(int id) {
+    singleton->player->advance();
+    glutTimerFunc(100, playerAnimation, id);
+}
+
 void spawnFruit(int id) {
     singleton->createFruit();
     glutTimerFunc(500, spawnFruit, id);
-}
-
-void animation(int id) {
-
-    singleton->player->advance();
-    glutTimerFunc(100, animation, id);
 }
 
 void Game::createFruit() {
@@ -134,7 +135,6 @@ void Game::createFruit() {
         break;
     case 5:
         objects.push_back(new Sprite("bomb.png", fruitX, 1.2, .15, .15, 0, -.01, bomb));
-
     }
 }
 
@@ -155,13 +155,16 @@ Game::Game() {
 
     bg = new TexRect("bg.png", -1, 1, 2, 2);
     singleton = this;
+
     gameLoop(0);
+
     spawnFruit(1);
 
     // prints fps of the game every second
     frameCounter(2);
 
-    animation(3);
+    playerAnimation(3);
+    // explosionAnimiation is id = 4
 }
 
 void Game::idle() {
@@ -215,14 +218,14 @@ void Game::draw() const {
         explosion->draw();
     }
 
-
     hud->draw();
-
 }
 
 Game::~Game() {
     for (auto i = objects.begin(); i != objects.end(); i++) {
         delete *i;
     }
-    // delete hud;
+    delete hud;
+    delete explosion;
+    delete bg;
 }

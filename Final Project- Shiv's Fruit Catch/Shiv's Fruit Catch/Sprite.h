@@ -25,9 +25,10 @@ class Sprite : public MovingTexRect {
     bool done, loop;
 
   public:
+    Sprite(const char *filename, float x, float y, float w, float h);
     Sprite(const char *filename, float x, float y, float w, float h, float dx, float dy, ID);
     Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, bool l);
-    Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float, float, bool l, ID);
+    Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float dx, float dy, bool l, ID);
 
     virtual void draw(float z = 0) const;
 

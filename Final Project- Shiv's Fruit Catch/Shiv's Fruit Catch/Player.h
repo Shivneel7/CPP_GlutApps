@@ -49,4 +49,6 @@ class Player : public Sprite {
     virtual bool checkCollision(const Rect &r) const;
 
     virtual void showBounds() const;
+
+    ~Player();
 };

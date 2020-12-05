@@ -8,6 +8,7 @@ class Game {
     static const float PLAYER_BASE_SPEED;
 
     HUD* hud;
+
     std::vector<Sprite *> objects;
 
     TexRect *bg;
@@ -36,7 +37,7 @@ class Game {
 
     friend void gameLoop(int id);
     friend void spawnFruit(int id);
-    friend void animation(int id);
+    friend void playerAnimation(int id);
     friend void explosionAnimation(int id);
 
     ~Game();
