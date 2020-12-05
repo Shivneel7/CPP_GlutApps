@@ -21,6 +21,7 @@ class Game {
     Text* s;
     int score, lost;
     bool showExplosion;
+    bool debugModeEnabled;
 
   public:
     Game();

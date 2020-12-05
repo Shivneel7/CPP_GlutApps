@@ -14,18 +14,22 @@
 class Player : public Sprite {
 
     MovingTexRect *basket;
+
+    //The original bounds of the mario texture was too large, so, I made this rectangle which acts as an artifical boundary box for collision detection
     Rect *bounds;
-    // facing left is 1, facing right is 0;
+
+
     bool facingLeft;
     bool speedBoost;
     bool moving;
     bool jumping;
-    bool showPlayer;
-    bool invulnerable;
+    bool debugMode;
+    //Used so Player doesnt take multiple damage ticks when in contact with a persistance damage source
+    bool showPlayer, invulnerable;
     int invulnerableCount;
 
   public:
-    Player();
+    Player(bool);
 
     void draw(float z = 0) const;
     void idle();
@@ -42,5 +46,7 @@ class Player : public Sprite {
     bool checkBasketCollision(const Rect &two);
 
     // for changing the bounds of
-    // virtual bool checkCollision(const Rect &r) const;
+    virtual bool checkCollision(const Rect &r) const;
+
+    virtual void showBounds() const;
 };

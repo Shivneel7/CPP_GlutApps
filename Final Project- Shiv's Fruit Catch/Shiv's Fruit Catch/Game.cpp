@@ -75,9 +75,9 @@ void gameLoop(int id) {
                 (*i)->setDY(0);
                 (*i)->setDX(.01);
             }
-            if(singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()){
+            if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()) {
                 singleton->player->setInvulnerable(true);
-                
+
                 ////////////////////////////Health --
             }
             if ((*i)->getX() < -1.2 || (*i)->getX() > 1.2) {
@@ -116,7 +116,7 @@ void animation(int id) {
 void Game::createFruit() {
     float fruitX = (rand() % 190) / 100.0 - 1.0;
 
-    switch (rand() % 5) {
+    switch (rand() % 6) {
     case 0:
         objects.push_back(new Sprite("apple.png", fruitX, 1.2, .1, .1, 0, -.01, fruit));
         break;
@@ -127,19 +127,25 @@ void Game::createFruit() {
         objects.push_back(new Sprite("mango.png", fruitX, 1.2, .1, .1, 0, -.01, fruit));
         break;
     case 3:
-        objects.push_back(new Sprite("bomb.png", fruitX, 1.2, .15, .15, 0, -.01, bomb));
+        objects.push_back(new Sprite("grape.png", fruitX, 1.2, .1, .1, 0, -.01, fruit));
         break;
     case 4:
         objects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
+        break;
+    case 5:
+        objects.push_back(new Sprite("bomb.png", fruitX, 1.2, .15, .15, 0, -.01, bomb));
+
     }
 }
 
 Game::Game() {
     srand(time(NULL));
     showExplosion = false;
+    debugModeEnabled = false;
     score = 0;
     lost = 0;
-    player = new Player();
+    
+    player = new Player(debugModeEnabled);
     objects.push_back(player);
 
     // TODO FIX THE TEXT
@@ -175,19 +181,15 @@ void Game::keyDown(unsigned char key, float x, float y) {
     } else if (key == 'w' || key == 'W') {
         player->jump();
     }
-
-    // std::cout << key << std::endl;
 }
 
 void Game::keyUp(unsigned char key, float x, float y) {
     if (key == 'a' || key == 'A') {
         player->setDX(player->getDX() + PLAYER_BASE_SPEED);
-        // std::cout << player->getDX() << std::endl;
 
     } else if (key == 'd' || key == 'D') {
         player->setDX(player->getDX() - PLAYER_BASE_SPEED);
     }
-    // std::cout<< key << std::endl;
 }
 
 void Game::specialKeyDown(int key, float x, float y) {
@@ -206,9 +208,9 @@ void Game::draw() const {
     bg->draw();
 
     for (auto i = objects.begin(); i != objects.end(); i++) {
-        // std::cout << "draw: " << (*i)->getID() << std::endl;
         (*i)->draw();
-        (*i)->showBounds();
+        if (debugModeEnabled)
+            (*i)->showBounds();
     }
     for (auto i = hud.begin(); i != hud.end(); i++) {
         (*i)->draw(.5);

@@ -1,22 +1,17 @@
 
 
-            ~Make good sprite sheet class
 Game:
     HUD:
         health
         score
     
-    Make bouding box and sprite line up
-
     Upgrades:
         SpeedBoost gets recharged by speed fruit
         Bigger Basket upgrade using mario mushroom, or by picking up a bigger basket.
         health fruit
 
-    bombs also fall from sky, when touch player, or caught in basket -> explosion  
-        getting hit by bomb makes health go down one
+    getting hit by bomb makes health go down one
     
-    occasionally obstacle you need to jump over appears (turtl shell)
 
     Game over when health goes to 0
 
@@ -25,14 +20,11 @@ Game:
     Can activate fruit frenzy mode where losing fruit does not lower score, and fruit spawns are increased for short amount of time?
 
     Remove constants from player
-    Fix Sprite class to make it better
 
     make my fast speed actually useful
 
-    add Background
 
-    Penalty for not cathcing fruit?
-        Little Buddy makes fail face, lose some score.
+    Penalty for not cathcing fruit
 
         
 Clean Everything:

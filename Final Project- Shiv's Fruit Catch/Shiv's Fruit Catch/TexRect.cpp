@@ -3,7 +3,7 @@
 
 TexRect::TexRect(const char* filename, float x=0, float y=0, float w=0.5, float h=0.5): Rect(x, y, w, h, 1.0f, 1.0f, 1.0f){
 
-    std::cout << "Loading " << filename << std::endl;
+    // std::cout << "Loading " << filename << std::endl;
     
     glClearColor (0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_FLAT);
