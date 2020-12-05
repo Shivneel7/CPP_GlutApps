@@ -14,7 +14,7 @@
 class Player : public Sprite {
 
     MovingTexRect *basket;
-
+    Rect* bounds;
     // facing left is 1, facing right is 0;
     bool facingLeft;
     bool speedBoost;
@@ -32,5 +32,6 @@ class Player : public Sprite {
     void setIsFaster(bool b);
     bool isMoving();
 
+    bool checkBasketContains(float, float);
     bool checkBasketCollision(const Rect &two);
 };

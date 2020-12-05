@@ -1,9 +1,20 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player() : Sprite("mario.png", 10, 8, -.1, -.62, .3, .4, 0, 0, player), facingLeft(0), speedBoost(0), basket(new MovingTexRect("basket1.png", -.1, -.72, .1, .1, 0, 0, defaultID)) {
+Player::Player() : Sprite("mario.png", 10, 8, -.1, -.62, .3, .4, 0, 0, player), facingLeft(0), speedBoost(0), basket(new MovingTexRect("basket1.png", -.1, -.72, .2, .1, 0, 0, defaultID)) {
     left = 0;
     right = 0.125;
+    // temporarily using these. fix once sprite sheet class is fixed
+
+    // flashing
+    // int row = 2;
+    // cols = 2;
+
+    // walking
+    int row = 1;
+    cols = 8;
+    bottom = row * .1;
+    top = bottom + .1;
 }
 
 void Player::draw(float z) const {
@@ -16,36 +27,40 @@ void Player::draw(float z) const {
     glColor4f(1, 1, 1, 1);
 
     if (facingLeft) {
-        glTexCoord2f(left, .1);
+        glTexCoord2f(left, bottom);
         glVertex3f(x, y - h, z);
 
-        glTexCoord2f(left, .2);
+        glTexCoord2f(left, top);
         glVertex3f(x, y, z);
 
-        glTexCoord2f(right, .2);
+        glTexCoord2f(right, top);
         glVertex3f(x + w, y, z);
 
-        glTexCoord2f(right, 0.1);
+        glTexCoord2f(right, bottom);
         glVertex3f(x + w, y - h, z);
     } else {
-        glTexCoord2f(right, 0.1);
+        glTexCoord2f(right, bottom);
         glVertex3f(x, y - h, z);
 
-        glTexCoord2f(right, .2);
+        glTexCoord2f(right, top);
         glVertex3f(x, y, z);
 
-        glTexCoord2f(left, .2);
+        glTexCoord2f(left, top);
         glVertex3f(x + w, y, z);
 
-        glTexCoord2f(left, .1);
+        glTexCoord2f(left, bottom);
         glVertex3f(x + w, y - h, z);
     }
 
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
-    basket->draw();
 
+    // Displays bounds of player
+    showBounds();
+
+    basket->draw();
+    basket->showBounds();
     // player-idle.png
     // glColor4f(1, 1, 1, 1);
 
@@ -120,7 +135,7 @@ void Player::draw(float z) const {
 void Player::advance() {
     left += .125;
     right += .125;
-    if (right > 1 || !moving) {
+    if (right > (cols / 8.0) || !moving) {
         left = 0;
         right = .125;
     }
@@ -173,6 +188,11 @@ void Player::setIsFaster(bool b) {
 bool Player::isMoving() {
     return moving;
 }
+
 bool Player::checkBasketCollision(const Rect &two) {
-    basket->checkCollision(two);
+    return basket->checkCollision(two);
+}
+
+bool Player::checkBasketContains(float x, float y) {
+    return basket->contains(x, y);
 }

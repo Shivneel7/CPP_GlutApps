@@ -25,6 +25,8 @@ class MovingTexRect : public TexRect {
 
     virtual void idle();
 
+    //Call showBounds() in the draw method of a child to draw the collision bound rectangle for debugging purposes
+    void showBounds() const;
     void setDX(float dx);
     float getDX() const;
 

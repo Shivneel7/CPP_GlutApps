@@ -8,6 +8,12 @@ void MovingTexRect::idle() {
     y += dy;
 }
 
+void MovingTexRect::showBounds() const{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    Rect::draw();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
 void MovingTexRect::setDX(float dx) {
     this->dx = dx;
 }

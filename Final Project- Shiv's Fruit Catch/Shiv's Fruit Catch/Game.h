@@ -16,13 +16,14 @@ class Game {
     TexRect* bg;
     Player *player;
     
-    Sprite* test;
+    Sprite* explosion;
     Sprite* test2;
     Sprite* test3;
 
     Text* s;
     int score, lost;
-    
+    bool showExplosion;
+
   public:
     Game();
 
@@ -39,6 +40,7 @@ class Game {
     friend void gameLoop(int id);
     friend void spawnFruit(int id);
     friend void animation(int id);
+    friend void animation2(int id);
 
     ~Game();
 };
