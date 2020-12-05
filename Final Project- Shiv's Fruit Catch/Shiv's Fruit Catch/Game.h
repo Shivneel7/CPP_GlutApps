@@ -1,26 +1,24 @@
 #pragma once
 
-#include "MovingTexRect.h"
 #include "Player.h"
-#include "Sprite.h"
-#include "TexRect.h"
-#include "Text.h"
+#include "HUD.h"
 #include <vector>
 
 class Game {
     static const float PLAYER_BASE_SPEED;
 
-    std::vector<Rect*> hud;
+    HUD* hud;
     std::vector<Sprite *> objects;
 
-    TexRect* bg;
+    TexRect *bg;
     Player *player;
-    
-    Sprite* explosion;
 
-    Text* s;
-    int score, lost;
+    Sprite *explosion;
+
+    int lost;
     bool showExplosion;
+
+    //Whether or not to turn on certain debugging features
     bool debugModeEnabled;
 
   public:

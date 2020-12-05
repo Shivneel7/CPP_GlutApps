@@ -1,9 +1,9 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player(bool debug) : Sprite("player.png", 1, 8, -.1, -.62, .25, .3, 0, 0, true, player), debugMode(debug), facingLeft(0), speedBoost(0), basket(new MovingTexRect("basket1.png", -.1, -.72, .2, .1, 0, 0, defaultID)), jumping(false), invulnerable(0), showPlayer(true), invulnerableCount(0), bounds(new Rect(x, y, w, h)) {
-    bounds->setW(.15);
-    bounds->setH(.25);
+Player::Player(bool debug) : Sprite("player.png", 1, 8, -.1, -.62, .25, .3, 0, 0, true, player), debugMode(debug), facingLeft(0), speedBoost(0), basket(new MovingTexRect("basket.png", -.1, -.72, .2, .1, 0, 0, defaultID)), jumping(false), invulnerable(0), showPlayer(true), invulnerableCount(0), bounds(new Rect(x, y, w, h)) {
+    bounds->setW(.125);
+    bounds->setH(.2);
 }
 
 void Player::draw(float z) const {
@@ -47,11 +47,12 @@ void Player::draw(float z) const {
     glDisable(GL_TEXTURE_2D);
 
     // Displays bounds of player
-    if (debugMode)
+    if (debugMode) {
         showBounds();
+        basket->showBounds();
+    }
 
     basket->draw();
-    // basket->showBounds();
 }
 
 void Player::advance() {
@@ -106,16 +107,17 @@ void Player::idle() {
     }
 
     // keep bounds in line
-    bounds->setX(x + .05);
-    bounds->setY(y - .05);
 
     // Keep basket equipped
     if (facingLeft) {
+        bounds->setX(x + .075);
         basket->setX(x - .125);
 
     } else {
+        bounds->setX(x + .05);
         basket->setX(x + .175);
     }
+    bounds->setY(y - .05);
     basket->setY(y - .1);
 }
 
@@ -130,7 +132,7 @@ void Player::showBounds() const {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     bounds->draw();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    MovingTexRect::showBounds();
+    // MovingTexRect::showBounds();
 }
 
 bool Player::checkCollision(const Rect &two) const {

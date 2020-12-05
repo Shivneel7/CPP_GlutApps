@@ -31,32 +31,34 @@ void gameLoop(int id) {
 
         if ((*i)->getID() == fruit) {
 
-            // if (fruit && singleton->player->checkBasketContains((*i)->getX()+(*i)->getW()/2,(*i)->getY())) {
             if (singleton->player->checkBasketCollision(*(*i))) {
 
-                singleton->score++;
-                singleton->s->setText("Score: " + std::to_string(singleton->score) + " Lost: " + std::to_string(singleton->lost));
+                singleton->hud->increaseScore();
 
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
 
             } else if ((*i)->getY() < -.75) { // Fruit left the screen
+
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
-                singleton->lost++;
-                singleton->s->setText("Score: " + std::to_string(singleton->score) + " Lost: " + std::to_string(singleton->lost));
+                // singleton->lost++;
+                // singleton->s->setText("Score: " + std::to_string(singleton->score) + " Lost: " + std::to_string(singleton->lost));
             }
         }
 
         if ((*i)->getID() == bomb) {
-            if (/*singleton->player->checkBasketCollision(*(*i)) || */ singleton->player->checkCollision(*(*i))) {
+            if (singleton->player->checkCollision(*(*i))) {
 
                 singleton->showExplosion = true;
                 explosionAnimation(4);
+                
 
-                // std::cout << "BOOOOOOOOOOOOOOOM" << std::endl;
+                ////////////////HEalth --
+
+
                 delete (*i);
                 i = singleton->objects.erase(i);
                 shouldIncrement = false;
@@ -96,10 +98,8 @@ void gameLoop(int id) {
 
     glutPostRedisplay();
     frames++;
-    // std::cout << singleton->score << std::endl;
 
     glutTimerFunc(1000.0 / 60, gameLoop, id);
-    // glutTimerFunc(1000, gameLoop, id);
 }
 
 void spawnFruit(int id) {
@@ -140,18 +140,17 @@ void Game::createFruit() {
 
 Game::Game() {
     srand(time(NULL));
+
     showExplosion = false;
     debugModeEnabled = false;
-    score = 0;
+
+    hud = new HUD();
+
     lost = 0;
-    
+
     player = new Player(debugModeEnabled);
     objects.push_back(player);
 
-    // TODO FIX THE TEXT
-    s = new Text(0, 0, "Score: 0 Lost: 0", 0, 0, 1);
-
-    hud.push_back(s);
     explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.3, 0.4, false);
 
     bg = new TexRect("bg.png", -1, 1, 2, 2);
@@ -212,19 +211,18 @@ void Game::draw() const {
         if (debugModeEnabled)
             (*i)->showBounds();
     }
-    for (auto i = hud.begin(); i != hud.end(); i++) {
-        (*i)->draw(.5);
-    }
     if (showExplosion) {
         explosion->draw();
     }
+
+
+    hud->draw();
+
 }
 
 Game::~Game() {
     for (auto i = objects.begin(); i != objects.end(); i++) {
         delete *i;
     }
-    for (auto i = hud.begin(); i != hud.end(); i++) {
-        delete *i;
-    }
+    // delete hud;
 }
