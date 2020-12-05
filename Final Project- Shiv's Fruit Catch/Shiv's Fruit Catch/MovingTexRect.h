@@ -4,16 +4,16 @@
 
 /** ID of the movingSprite object for object interaction purposes in the Game.cpp file
  */
-enum ID { fruit, bomb, player, defaultID};
+enum ID { fruit, bomb, player, spiny, defaultID };
 
 /**This is a base class for any object in the game that moves.
  *
- * Child of Sprite Class: 
+ * Child of Sprite Class:
  *    Adds the idle function as well as member varaibles dx and dy, for movement purposes
  *
  *Contains an enum called ID so that the game can tell apart different objects
  *
- * 
+ *
  */
 class MovingTexRect : public TexRect {
   protected:
@@ -25,8 +25,11 @@ class MovingTexRect : public TexRect {
 
     virtual void idle();
 
-    //Call showBounds() in the draw method of a child to draw the collision bound rectangle for debugging purposes
+    virtual bool checkCollision(const Rect &r) const;
+
+    // Call showBounds() in the draw method of a child to draw the collision bound rectangle for debugging purposes
     void showBounds() const;
+
     void setDX(float dx);
     float getDX() const;
 

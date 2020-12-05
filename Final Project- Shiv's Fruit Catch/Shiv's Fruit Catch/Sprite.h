@@ -16,23 +16,18 @@ class Sprite : public MovingTexRect {
     float xinc;
     float yinc;
 
-    //which row/column to get subImage from
-    
-    int curr_row;
-    int curr_col;
-
-    //where on the png file we get the current image
-
+    // where on the png file we get the current image
     float left;
     float right;
     float top;
     float bottom;
 
-    bool done;
+    bool done, loop;
 
   public:
-    Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h);
-    Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float, float, ID);
+    Sprite(const char *filename, float x, float y, float w, float h, float dx, float dy, ID);
+    Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, bool l);
+    Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float, float, bool l, ID);
 
     virtual void draw(float z = 0) const;
 

@@ -30,7 +30,6 @@ public:
 
 	bool contains(float, float) const;
 
-	bool checkCollision(const Rect& r) const;
 };
 
 #endif

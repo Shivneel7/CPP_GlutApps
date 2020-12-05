@@ -1,39 +1,33 @@
 #include "Sprite.h"
 
-Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h) : MovingTexRect(filename, x, y, w, h, 0, 0, defaultID) {
-    this->rows = rows;
-    this->cols = cols;
-
+Sprite::Sprite(const char *filename, float x, float y, float w, float h, float dx, float dy, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {
+    rows = 1;
+    cols = 1;
     xinc = 1.0 / cols;
     yinc = 1.0 / rows;
-
-    curr_row = 1;
-    curr_col = 1;
-
-    left = xinc * (curr_col - 1);
-    right = xinc * curr_col;
-    top = 1 - yinc * (curr_row - 1);
-    bottom = 1 - yinc * curr_row;
-
-    done = false;
+    reset();
 }
 
-Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float dx, float dy, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {
+Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, bool l) : MovingTexRect(filename, x, y, w, h, 0, 0, defaultID) {
     this->rows = rows;
     this->cols = cols;
+    this->loop = l;
 
     xinc = 1.0 / cols;
     yinc = 1.0 / rows;
 
-    curr_row = 1;
-    curr_col = 1;
+    reset();
+}
 
-    left = xinc * (curr_col - 1);
-    right = xinc * curr_col;
-    top = 1 - yinc * (curr_row - 1);
-    bottom = 1 - yinc * curr_row;
+Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float dx, float dy, bool l, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {
+    this->rows = rows;
+    this->cols = cols;
+    this->loop = l;
 
-    done = false;
+    xinc = 1.0 / cols;
+    yinc = 1.0 / rows;
+
+    reset();
 }
 
 bool Sprite::isDone() const {
@@ -64,26 +58,28 @@ void Sprite::draw(float z) const {
 }
 
 void Sprite::reset() {
-    curr_row = 1;
-    curr_col = 1;
     done = false;
+    left = 0;
+    right = xinc;
+    bottom = 1 - yinc;
+    top = 1;
 }
 
 void Sprite::advance() {
-    if (curr_col < cols) {
-        curr_col++;
-    } else {
-        if (curr_row < rows) {
-            curr_col = 1;
-            curr_row++;
-        } else {
+    left += xinc;
+    right += xinc;
+
+    if (right > 1) {
+        left = 0;
+        right = xinc;
+        bottom -= yinc;
+        top -= yinc;
+
+        if (bottom < 0) {
             done = true;
-            curr_row = 1;
-            curr_col = 1;
+            if (loop) {
+                reset();
+            }
         }
     }
-    left = xinc * (curr_col - 1);
-    right = xinc * curr_col;
-    top = 1 - yinc * (curr_row - 1);
-    bottom = 1 - yinc * curr_row;
 }

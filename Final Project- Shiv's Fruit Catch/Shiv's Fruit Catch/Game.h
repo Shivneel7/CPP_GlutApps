@@ -11,14 +11,12 @@ class Game {
     static const float PLAYER_BASE_SPEED;
 
     std::vector<Rect*> hud;
-    std::vector<MovingTexRect *> objects;
+    std::vector<Sprite *> objects;
 
     TexRect* bg;
     Player *player;
     
     Sprite* explosion;
-    Sprite* test2;
-    Sprite* test3;
 
     Text* s;
     int score, lost;
@@ -40,7 +38,7 @@ class Game {
     friend void gameLoop(int id);
     friend void spawnFruit(int id);
     friend void animation(int id);
-    friend void animation2(int id);
+    friend void explosionAnimation(int id);
 
     ~Game();
 };

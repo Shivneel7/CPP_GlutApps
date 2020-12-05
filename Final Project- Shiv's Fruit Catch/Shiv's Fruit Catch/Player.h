@@ -3,7 +3,7 @@
 #include "Sprite.h"
 
 /** A Moving Sprite object with added functionality:
- * 
+ *
  * has a modified idle so that player can jump and is affected by gravity
  *
  * players sprite behaves a bit differently than other sprites
@@ -14,11 +14,15 @@
 class Player : public Sprite {
 
     MovingTexRect *basket;
-    Rect* bounds;
+    Rect *bounds;
     // facing left is 1, facing right is 0;
     bool facingLeft;
     bool speedBoost;
     bool moving;
+    bool jumping;
+    bool showPlayer;
+    bool invulnerable;
+    int invulnerableCount;
 
   public:
     Player();
@@ -30,8 +34,13 @@ class Player : public Sprite {
     // facing left is 1, facing right is 0;
     void setIsFacingLeft(bool b);
     void setIsFaster(bool b);
-    bool isMoving();
+    bool isMoving() const;
+    void setInvulnerable(bool b);
+    bool isInvulnerable() const;
 
     bool checkBasketContains(float, float);
     bool checkBasketCollision(const Rect &two);
+
+    // for changing the bounds of
+    // virtual bool checkCollision(const Rect &r) const;
 };

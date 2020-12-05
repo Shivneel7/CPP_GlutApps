@@ -8,7 +8,12 @@ void MovingTexRect::idle() {
     y += dy;
 }
 
-void MovingTexRect::showBounds() const{
+bool MovingTexRect::checkCollision(const Rect &two) const {
+    return (this->getX() < (two.getX() + two.getW()) && two.getX() < (this->getX() + this->getW())) && 
+    (this->getY() > (two.getY() - two.getH()) && two.getY() > (this->getY() - this->getH()));
+}
+
+void MovingTexRect::showBounds() const {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     Rect::draw();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
