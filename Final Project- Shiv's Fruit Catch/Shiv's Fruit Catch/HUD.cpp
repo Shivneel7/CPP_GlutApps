@@ -43,7 +43,11 @@ void HUD::increaseEnergy() {
 }
 
 void HUD::decreaseEnergy() {
-    energyBar->increment(-.005);
+    energyBar->increment(-.003);
+}
+
+void HUD::replenishEnergy() {
+    energyBar->increment(1);
 }
 
 bool HUD::hasEnergy() const {

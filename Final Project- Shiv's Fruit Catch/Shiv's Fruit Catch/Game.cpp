@@ -26,11 +26,17 @@ void explosionAnimation(int id) {
 }
 
 void gameLoop(int id) {
+    if (singleton->preGame) {
+        singleton->demo->advance();
+    }
+
     if (!singleton->paused && !singleton->gameOver) {
 
         // Faster Movement controller
         if (singleton->player->isSpeedBoosted() && singleton->player->isMoving()) {
-            singleton->hud->decreaseEnergy();
+            if (!singleton->preGame) {
+                singleton->hud->decreaseEnergy();
+            }
 
             if (!singleton->hud->hasEnergy()) {
                 singleton->player->setSpeedBoost(false);
@@ -95,7 +101,7 @@ void gameLoop(int id) {
                 break;
 
             case bomb:
-                if (singleton->player->checkCollision(*(*i))) {
+                if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()) {
 
                     singleton->showExplosion = true;
                     explosionAnimation(4);
@@ -165,8 +171,14 @@ void playerAnimation(int id) {
     glutTimerFunc(100, playerAnimation, id);
 }
 
+void difficultyTimer(int id) {
+    singleton->difficulty++;
+    std::cout << "Difficulty: " << singleton->difficulty << std::endl;
+    glutTimerFunc(singleton->DIFFICULTY_INCREASE_MODIFIER * 1000, difficultyTimer, id);
+}
+
 void spawnFallingObjectLoop(int id) {
-    if (!singleton->paused && !singleton->gameOver)
+    if (!singleton->paused && !singleton->gameOver && !singleton->preGame)
         singleton->createFallingObject();
 
     glutTimerFunc(500, spawnFallingObjectLoop, id);
@@ -175,38 +187,81 @@ void spawnFallingObjectLoop(int id) {
 void Game::createFallingObject() {
     float objectX = (rand() % 190) / 100.0 - 1.0;
 
-    switch (rand() % 9) {
+    switch (rand() % 12) {
     case 0:
-        movingGameObjects.push_back(new Sprite("apple.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
-        break;
-    case 1:
         movingGameObjects.push_back(new Sprite("banana.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
         break;
+
+    case 1:
+        movingGameObjects.push_back(new Sprite("apple.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        break;
+
     case 2:
         movingGameObjects.push_back(new Sprite("mango.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
         break;
+
     case 3:
         movingGameObjects.push_back(new Sprite("grape.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
         break;
-    case 4:
-        movingGameObjects.push_back(new Sprite("grape.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
-        break;
 
-    case 5:
-        if (rand() % 2) {
-            movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
+    case 4:
+        if (difficulty < 1) { // as difficulty increases more dangerous objects will spawn
+            movingGameObjects.push_back(new Sprite("banana.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
         } else {
-            movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
+            movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+        }
+        break;
+    case 5:
+        if (difficulty < 2) { // as difficulty increases more dangerous objects will spawn
+            movingGameObjects.push_back(new Sprite("apple.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        } else {
+            movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+        }
+        break;
+    case 6:
+        if (difficulty < 3) { // as difficulty increases more dangerous objects will spawn
+            movingGameObjects.push_back(new Sprite("mango.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        } else {
+            movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+        }
+        break;
+    case 7:
+        if (difficulty < 4) { // as difficulty increases more dangerous objects will spawn
+            movingGameObjects.push_back(new Sprite("grape.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        } else {
+            if (rand() % 2) {
+                movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
+            } else {
+                movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
+            }
         }
         break;
 
-    case 6:
+    case 8:
+        if (difficulty > 8) { // as difficulty increases more dangerous objects will spawn
+            movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
+            movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
+        } else {
+            if (rand() % 2) {
+                movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
+            } else {
+                movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
+            }
+        }
+        break;
+
+    case 9:
         movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
         break;
 
-    case 7:
-        int lowerChances; // cheap and dirty way to lower the chance of a health object spawning while increasing chance of bomb
-        lowerChances = rand() % 5;
+    case 10:
+        int lowerChances;
+        if (difficulty < 10) {
+            lowerChances = rand() % (10 - difficulty); // if the difficulty goes up INCREASE chance of health spawn so skilled players can be rewarded
+        } else {
+            lowerChances = 0;
+        }
+
         if (lowerChances == 0) {
             movingGameObjects.push_back(new Sprite("health.png", objectX, 1.2, .1, .1, 0, -.01, health));
         } else {
@@ -214,7 +269,7 @@ void Game::createFallingObject() {
         }
         break;
 
-    case 8:
+    case 11:
         movingGameObjects.push_back(new Sprite("energy.png", objectX, 1.2, .1, .15, 0, -.01, energy));
         break;
     }
@@ -223,13 +278,16 @@ void Game::createFallingObject() {
 Game::Game() {
     srand(time(NULL));
     debugModeEnabled = false;
-
+    preGame = true;
     paused = false;
     gameOver = false;
+    difficulty = 0;
 
     showExplosion = false;
-    
+
     hud = new HUD();
+
+    infoScreen = new TexRect("info.png", -1, 1, 2, 2);
 
     bg = new TexRect("bg.png", -1, 1, 2, 2);
     pauseScreen = new TexRect("pause.png", -1, 1, 2, 2);
@@ -240,6 +298,8 @@ Game::Game() {
 
     explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.3, 0.4, false);
 
+    // for DEMO
+    demo = new Sprite("spiny.png", 1, 16, .64, 0.33, .15, .15, 0, 0, true, spiny);
     singleton = this;
 
     gameLoop(0);
@@ -251,24 +311,29 @@ Game::Game() {
 
     playerAnimation(3);
     // explosionAnimiation is id = 4
+    // difficultyTimer is id = 5
 }
 
 void Game::idle() {
 }
 
 void Game::keyDown(unsigned char key, float x, float y) {
-    if (key == 'a' || key == 'A') {
+    if (key == ' ' && preGame) {
+        preGame = false;
+        demo->setX(1.5);
+        difficultyTimer(5);
+
+        // delete demo;
+
+    } else if (key == 'a' || key == 'A') {
         player->setDX(player->getDX() - PLAYER_BASE_SPEED);
         player->setIsFacingLeft(1);
-
     } else if (key == 'd' || key == 'D') {
 
         player->setDX(player->getDX() + PLAYER_BASE_SPEED);
         player->setIsFacingLeft(0);
-
-    } else if (key == 'w' || key == 'W' || key == ' ') {
+    } else if (key == 'w' || key == 'W') {
         player->jump();
-        
     } else if (key == 'p' || key == 'P') {
         paused = !paused;
         glutPostRedisplay();
@@ -297,16 +362,19 @@ void Game::specialKeyUp(int key, float x, float y) {
 }
 
 void Game::draw() const {
+
     if (gameOver) {
         lossScreen->draw();
-
     } else {
-
-        if (paused) {
+        if (preGame) {
+            infoScreen->draw();
+            demo->draw();
+        } else if (paused) {
             pauseScreen->draw();
         } else {
             bg->draw();
         }
+
         for (auto i = movingGameObjects.begin(); i != movingGameObjects.end(); i++) {
             (*i)->draw();
             if (debugModeEnabled)
@@ -316,7 +384,8 @@ void Game::draw() const {
             explosion->draw();
         }
     }
-    hud->draw();
+    if (!preGame)
+        hud->draw();
 }
 
 Game::~Game() {
@@ -324,6 +393,7 @@ Game::~Game() {
         delete *i;
     }
     delete hud;
+    delete demo;
     delete explosion;
     delete bg;
     delete pauseScreen;

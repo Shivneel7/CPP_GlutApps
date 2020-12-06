@@ -1,30 +1,37 @@
 #pragma once
 
-#include "Player.h"
 #include "HUD.h"
+#include "Player.h"
 #include <vector>
 
 class Game {
     static const float PLAYER_BASE_SPEED;
 
-    HUD* hud;
+    //how often in seconds to ramp up the Difficulty
+    static const int DIFFICULTY_INCREASE_MODIFIER = 5;
+
+    HUD *hud;
 
     std::vector<Sprite *> movingGameObjects;
-    
+
+    TexRect *infoScreen;
+    Sprite *demo;
     TexRect *bg;
     TexRect *pauseScreen;
     TexRect *lossScreen;
-    
 
     Player *player;
 
     Sprite *explosion;
 
+    bool preGame;
     bool gameOver;
     bool showExplosion;
     bool paused;
 
-    //Whether or not to turn on certain debugging features
+    //increases as game goes on. Controls bomb, fruit, and health upgrade spawn rate
+    int difficulty;
+    // Whether or not to turn on certain debugging features
     bool debugModeEnabled;
 
   public:
@@ -44,6 +51,7 @@ class Game {
     friend void spawnFallingObjectLoop(int id);
     friend void playerAnimation(int id);
     friend void explosionAnimation(int id);
+    friend void difficultyTimer(int id);
 
     ~Game();
 };

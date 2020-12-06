@@ -33,6 +33,7 @@ class HUD {
 
     void increaseEnergy();
     void decreaseEnergy();
+    void replenishEnergy();
     bool hasEnergy() const;
 
     void draw(float z = 0) const;
