@@ -28,6 +28,7 @@ public:
 	float getW() const;
 	float getH() const;
 	void setH(float);
+	void setColor(float r, float g, float b);
 
 	bool contains(float, float) const;
 };

@@ -19,11 +19,12 @@ class Text : public Rect {
     Text(float, float, std::string);
 
     Text(float, float, std::string, float, float, float);
-    
+
     Text(Text &other);
 
     void draw(float z = 0) const;
 
     void setText(std::string t);
 
+    void setFont(void *font);
 };

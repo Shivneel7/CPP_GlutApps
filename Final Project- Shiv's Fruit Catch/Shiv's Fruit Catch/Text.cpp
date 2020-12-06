@@ -26,3 +26,7 @@ void Text::draw(float z) const {
 void Text::setText(std::string t) {
     text = t;
 }
+
+void Text::setFont(void *f){
+    font = f;
+}

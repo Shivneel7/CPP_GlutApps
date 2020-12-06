@@ -4,7 +4,7 @@ HUD::HUD() {
     fruitCollected = 0;
     fruitDropped = 0;
 
-    fruitCollectedText = new Text(.3, -.8, "Fruits Collected: 0", 44/255.0, 169/255.0, 82/255.0);
+    fruitCollectedText = new Text(.3, -.8, "Fruits Collected: 0", 44 / 255.0, 169 / 255.0, 82 / 255.0);
     hudComponents.push_back(fruitCollectedText);
 
     fruitDroppedText = new Text(.3, -.88, "Fruits Dropped: 0", 1, 0, 0);
@@ -46,6 +46,18 @@ void HUD::decreaseEnergy() {
     energyBar->increment(-.003);
 }
 
+void HUD::lose() {
+    fruitCollectedText->setX(-.5);
+    fruitCollectedText->setY(.3);
+    fruitCollectedText->setColor(0,100/255.0,0);
+    fruitCollectedText->setText("Good Job, You Collected " + std::to_string(fruitCollected) + " Fruit!");
+
+    fruitDroppedText->setX(-.8);
+    fruitDroppedText->setY(0.1);
+    fruitDroppedText->setColor(193 / 255.0, 42 / 255.0, 42 / 255.0);
+    fruitDroppedText->setText("Unfortunately, you also let " + std::to_string(fruitDropped) + " fruit touch the ground...");
+}
+
 void HUD::replenishEnergy() {
     energyBar->increment(1);
 }
@@ -60,7 +72,10 @@ void HUD::draw(float z) const {
     }
 }
 
-bool HUD::healthIsEmpty() const {
+bool HUD::healthIsEmpty() {
+    if (healthBar->isEmpty()) {
+        lose();
+    }
     return healthBar->isEmpty();
 }
 

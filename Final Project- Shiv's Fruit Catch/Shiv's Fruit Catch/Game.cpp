@@ -101,7 +101,7 @@ void gameLoop(int id) {
                 break;
 
             case bomb:
-                if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()) {
+                if (singleton->player->checkCollision(*(*i))) {
 
                     singleton->showExplosion = true;
                     explosionAnimation(4);
@@ -187,6 +187,7 @@ void spawnFallingObjectLoop(int id) {
 void Game::createFallingObject() {
     float objectX = (rand() % 190) / 100.0 - 1.0;
 
+    //this looks pretty bad, but this was the best way to fine tune the spawnrates with different difficulties
     switch (rand() % 12) {
     case 0:
         movingGameObjects.push_back(new Sprite("banana.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
@@ -211,6 +212,7 @@ void Game::createFallingObject() {
             movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
         }
         break;
+
     case 5:
         if (difficulty < 2) { // as difficulty increases more dangerous objects will spawn
             movingGameObjects.push_back(new Sprite("apple.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
@@ -218,11 +220,20 @@ void Game::createFallingObject() {
             movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
         }
         break;
+
     case 6:
         if (difficulty < 3) { // as difficulty increases more dangerous objects will spawn
             movingGameObjects.push_back(new Sprite("mango.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
         } else {
-            movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+            if (rand() % 2) {//50% chance of bomb
+                movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+            } else {
+                if (rand() % 2) { //50% chance of spiny
+                    movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
+                } else {
+                    movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
+                }
+            }
         }
         break;
     case 7:
@@ -238,7 +249,7 @@ void Game::createFallingObject() {
         break;
 
     case 8:
-        if (difficulty > 8) { // as difficulty increases more dangerous objects will spawn
+        if (difficulty > 5) { // as difficulty increases more dangerous objects will spawn
             movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
             movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
         } else {
@@ -256,10 +267,10 @@ void Game::createFallingObject() {
 
     case 10:
         int lowerChances;
-        if (difficulty < 10) {
-            lowerChances = rand() % (10 - difficulty); // if the difficulty goes up INCREASE chance of health spawn so skilled players can be rewarded
+        if (difficulty < 6) {
+            lowerChances = rand() % (8 - difficulty); // if the difficulty goes up INCREASE chance of health spawn so skilled players can be rewarded
         } else {
-            lowerChances = 0;
+            lowerChances = 3;
         }
 
         if (lowerChances == 0) {

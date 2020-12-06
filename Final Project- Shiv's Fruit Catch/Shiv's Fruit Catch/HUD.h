@@ -29,11 +29,12 @@ class HUD {
 
     void increaseHealth();
     void decreaseHealth();
-    bool healthIsEmpty() const;
+    bool healthIsEmpty();
 
     void increaseEnergy();
     void decreaseEnergy();
     void replenishEnergy();
+    void lose();
     bool hasEnergy() const;
 
     void draw(float z = 0) const;

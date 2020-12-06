@@ -8,7 +8,7 @@ class Game {
     static const float PLAYER_BASE_SPEED;
 
     //how often in seconds to ramp up the Difficulty
-    static const int DIFFICULTY_INCREASE_MODIFIER = 5;
+    static const int DIFFICULTY_INCREASE_MODIFIER = 1;
 
     HUD *hud;
 

@@ -66,6 +66,12 @@ float Rect::getH() const {
     return h;
 }
 
+void Rect::setColor(float r, float g, float b) {
+    this->r = r;
+    this->g = g;
+    this->b = b;
+}
+
 bool Rect::contains(float x, float y) const {
     return x >= this->x && x <= this->x + w && y <= this->y && y >= this->y - h;
 }
