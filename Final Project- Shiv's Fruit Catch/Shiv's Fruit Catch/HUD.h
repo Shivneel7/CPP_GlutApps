@@ -10,6 +10,8 @@ class HUD {
 
     Text *fruitCollectedText;
     Text *fruitDroppedText;
+    Text *timerText;
+
 
     Bar *healthBar;
     Bar *energyBar;
@@ -27,6 +29,8 @@ class HUD {
 
     void droppedFruit();
 
+    void setSeconds(int s);
+
     void increaseHealth();
     void decreaseHealth();
     bool healthIsEmpty();
@@ -34,8 +38,9 @@ class HUD {
     void increaseEnergy();
     void decreaseEnergy();
     void replenishEnergy();
-    void lose();
     bool hasEnergy() const;
+
+    void lose();
 
     void draw(float z = 0) const;
 

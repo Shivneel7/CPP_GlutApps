@@ -9,8 +9,20 @@ const float Game::PLAYER_BASE_SPEED = .02;
 int frames = 0;
 
 void frameCounter(int id) {
-    std::cout << "FPS: " << frames << std::endl;
+    if (!singleton->debugModeEnabled) {
+        std::cout << "FPS: " << frames << std::endl;
+    } else {
+        std::cout << "Seconds " << singleton->seconds << std::endl;
+    }
+
     frames = 0;
+    if (!singleton->paused && !singleton->gameOver && !singleton->preGame) {
+        singleton->seconds++;
+        if (singleton->seconds % Game::DIFFICULTY_INCREASE_MODIFIER == 0) {
+            singleton->difficulty++;
+            std::cout << "Difficulty " << singleton->difficulty << std::endl;
+        }
+    }
     glutTimerFunc(1000, frameCounter, id);
 }
 
@@ -108,6 +120,7 @@ void gameLoop(int id) {
 
                     singleton->hud->decreaseHealth();
                     if (singleton->hud->healthIsEmpty()) {
+                        singleton->hud->setSeconds(singleton->seconds);
                         singleton->gameOver = true;
                     }
 
@@ -128,6 +141,7 @@ void gameLoop(int id) {
 
                     singleton->hud->decreaseHealth();
                     if (singleton->hud->healthIsEmpty()) {
+                        singleton->hud->setSeconds(singleton->seconds);
                         singleton->gameOver = true;
                     }
                 }
@@ -160,14 +174,6 @@ void playerAnimation(int id) {
     glutTimerFunc(100, playerAnimation, id);
 }
 
-void difficultyTimer(int id) {
-    if (!singleton->paused) {
-        singleton->difficulty++;
-        std::cout << "Difficulty: " << singleton->difficulty << std::endl;
-    }
-    glutTimerFunc(singleton->DIFFICULTY_INCREASE_MODIFIER * 1000, difficultyTimer, id);
-}
-
 void spawnFallingObjectLoop(int id) {
     if (!singleton->paused && !singleton->gameOver && !singleton->preGame)
         singleton->spawnFallingObject();
@@ -175,174 +181,105 @@ void spawnFallingObjectLoop(int id) {
     glutTimerFunc(500, spawnFallingObjectLoop, id);
 }
 
+Game::Game() {
+    srand(time(NULL));
+    debugModeEnabled = 0;
+    preGame = true;
+    paused = false;
+    gameOver = false;
+    difficulty = 0;
+    seconds = 0;
+    showExplosion = false;
+
+    hud = new HUD();
+
+    infoScreen = new TexRect("info.png", -1, 1, 2, 2);
+
+    bg = new TexRect("bg.png", -1, 1, 2, 2);
+    pauseScreen = new TexRect("pause.png", -1, 1, 2, 2);
+    lossScreen = new TexRect("lose.png", -1, 1, 2, 2);
+
+    player = new Player(debugModeEnabled);
+    movingGameObjects.push_back(player);
+
+    explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.3, 0.4, false);
+
+    // for DEMO
+    demo = new Sprite("spiny.png", 1, 16, .64, 0.33, .15, .15, 0, 0, true, spiny);
+    singleton = this;
+
+    gameLoop(0);
+
+    spawnFallingObjectLoop(1);
+
+    // prints fps of the game every second
+    frameCounter(2);
+
+    playerAnimation(3);
+    // explosionAnimiation is id = 4
+    // difficultyTimer is id = 5
+}
+
 void Game::spawnFallingObject() {
-    int rn = rand() % 100;
-
-    // May look ugly, but this was my favorite way to implement difficulty dependant spawnrates
-    int numCases = 17;
-    if (difficulty > 17) {
-        numCases = difficulty;
-    }
-
-    switch (rand() % numCases) {
-    case 0:
-        spawn(fruit);
-        break;
-
-    case 1:
-        spawn(fruit);
-        break;
-
-    case 2:
-        spawn(fruit);
-        break;
-
-    case 3:
-        spawn(fruit);
-        break;
-
-    case 4:
-        if (difficulty < 2) { // as difficulty increases more dangerous objects will spawn
-            spawn(fruit);
-        } else {
-            spawn(bomb);
-        }
-        break;
-
-    case 5:
-        if (difficulty < 3) { // as difficulty increases more dangerous objects will spawn
-            spawn(fruit);
-
-        } else {
-            spawn(bomb);
-        }
-        break;
-
-    case 6:
-        if (difficulty < 4) { // as difficulty increases more dangerous objects will spawn
-            spawn(fruit);
-
-        } else {
-            if (rand() % 2) { // 50% chance of bomb
+    int rn = rand() % (100 + difficulty);
+    if (debugModeEnabled)
+        std::cout << rn << std::endl;
+    if (rn < 60) {
+        if (rn < 20 && rn < (difficulty * 2)) { // at difficulty 1, 60% fruit spawns. difficulty 13 = 40% fruit
+            if (rand() % 2) {
                 spawn(bomb);
-
-            } else { // 50% chance of spiny
+            } else if ((rand() % 2)) { // at difficulty 1: 75% bomb, 25% spiny. at difficulty 13: 50/50
                 spawn(spiny);
-            }
-        }
-        break;
+            } else {
+                if (rn < (difficulty * 2)) {
+                    spawn(spiny);
 
-    case 7:
-        if (difficulty < 5) { // as difficulty increases more dangerous objects will spawn
+                } else {
+                    spawn(bomb);
+                }
+            }
+        } else
             spawn(fruit);
 
-        } else {
-            spawn(spiny);
-        }
-        break;
-
-    case 8:
-        if (difficulty > 7) { // as difficulty increases more dangerous objects will spawn
-            spawn(doubleSpiny);
-
-        } else {
-            spawn(spiny);
-        }
-        break;
-
-    case 9:
+    } else if (rn < 71) {
         spawn(bomb);
-
-        if (difficulty > 6) { // as difficulty increases two bombs will spawn
+        if (difficulty > 7) { // double bombs at diff 7 and on
             spawn(bomb);
         }
-        break;
-
-    case 10:
-        int lowerChances;
-        // spawn more health as difficulty increases to reward skilled players
-        lowerChances = rand() % 5;
-        if (difficulty > 9) {
-            lowerChances = rand() % 4;
-        }
-        if (difficulty > 13) {
-            lowerChances = rand() % 3;
-        }
-        if (difficulty > 18) {
-            lowerChances = 0;
-        }
-        if (lowerChances == 0) {
-            spawn(health);
-
-        } else {
+        if (difficulty > 15) {
             spawn(bomb);
         }
-        break;
 
-    case 11:
-        spawn(energy);
-        break;
-
-    case 12:
-        if (difficulty < 8) { // as difficulty increases more dangerous objects will spawn
-            spawn(fruit);
-
-        } else {
-            spawn(bomb);
-
-            spawn(bomb);
-        }
-        break;
-
-    case 13:
-        if (difficulty < 9) { // as difficulty increases more dangerous objects will spawn
-            spawn(fruit);
-
-        } else {
-            spawn(bomb);
-            spawn(bomb);
-        }
-        break;
-
-    case 14:
-        if (difficulty < 10) { // as difficulty increases more dangerous objects will spawn
-            spawn(fruit);
-
-        } else {
-            if (rand() % 2) { // 50% chance of bomb
-                spawn(bomb);
-                spawn(bomb);
-
-            } else { // 50% chance of spines
-                spawn(doubleSpiny);
-            }
-        }
-        break;
-    case 15:
-        if (difficulty < 11) { // as difficulty increases more dangerous objects will spawn
-            spawn(fruit);
-
-        } else {
+    } else if (rn < 82) {
+        if (difficulty > 11) { // double spines at diff 11 and on
             spawn(doubleSpiny);
-        }
-        break;
-    case 16:
-        if (rand() % 2) {
-            spawn(energy);
-
         } else {
             spawn(spiny);
         }
-        break;
-    default:
+
+    } else if (rn < 91) {
+        spawn(energy);
+
+    } else if (rn < 100) {
+        if (rn > 100 - difficulty) { // health spawn percent = difficulty, max 9%
+            spawn(health);
+        } else {
+            spawn(fruit);
+        }
+    } else if (difficulty > 2) {
         if (rand() % 2) { // 50% chance of bomb
+            spawn(bomb);
             spawn(bomb);
 
         } else {
             if (rand() % 2) { // 25% chance of double spiny
                 spawn(doubleSpiny);
             }
-            spawn(spiny);
+            if (difficulty > 14) { // if diff is high, 100%
+                spawn(doubleSpiny);
+            } else {
+                spawn(spiny);
+            }
         }
     }
 }
@@ -350,7 +287,8 @@ void Game::spawnFallingObject() {
 // Made this function in case I want to change the values of these constant later.
 void Game::spawn(ID id) {
     float objectX = (rand() % 190) / 100.0 - 1.0;
-
+    if (debugModeEnabled)
+        std::cout << "ID: " << id << std::endl;
     switch (id) {
     case fruit:
         switch (rand() % 4) {
@@ -395,45 +333,6 @@ void Game::spawn(ID id) {
     }
 }
 
-Game::Game() {
-    srand(time(NULL));
-    debugModeEnabled = false;
-    preGame = true;
-    paused = false;
-    gameOver = false;
-    difficulty = 0;
-
-    showExplosion = false;
-
-    hud = new HUD();
-
-    infoScreen = new TexRect("info.png", -1, 1, 2, 2);
-
-    bg = new TexRect("bg.png", -1, 1, 2, 2);
-    pauseScreen = new TexRect("pause.png", -1, 1, 2, 2);
-    lossScreen = new TexRect("lose.png", -1, 1, 2, 2);
-
-    player = new Player(debugModeEnabled);
-    movingGameObjects.push_back(player);
-
-    explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.3, 0.4, false);
-
-    // for DEMO
-    demo = new Sprite("spiny.png", 1, 16, .64, 0.33, .15, .15, 0, 0, true, spiny);
-    singleton = this;
-
-    gameLoop(0);
-
-    spawnFallingObjectLoop(1);
-
-    // prints fps of the game every second
-    frameCounter(2);
-
-    playerAnimation(3);
-    // explosionAnimiation is id = 4
-    // difficultyTimer is id = 5
-}
-
 void Game::idle() {
 }
 
@@ -441,19 +340,20 @@ void Game::keyDown(unsigned char key, float x, float y) {
     if (key == ' ' && preGame) {
         preGame = false;
         demo->setX(1.5);
-        difficultyTimer(5);
-
+        seconds = 0;
         // delete demo;
 
     } else if (key == 'a' || key == 'A') {
         player->setDX(player->getDX() - PLAYER_BASE_SPEED);
         player->setIsFacingLeft(1);
-    } else if (key == 'd' || key == 'D') {
 
+    } else if (key == 'd' || key == 'D') {
         player->setDX(player->getDX() + PLAYER_BASE_SPEED);
         player->setIsFacingLeft(0);
+
     } else if (key == 'w' || key == 'W') {
         player->jump();
+
     } else if (key == 'p' || key == 'P') {
         paused = !paused;
         glutPostRedisplay();
@@ -512,6 +412,7 @@ Game::~Game() {
     for (auto i = movingGameObjects.begin(); i != movingGameObjects.end(); i++) {
         delete *i;
     }
+    delete infoScreen;
     delete hud;
     delete demo;
     delete explosion;

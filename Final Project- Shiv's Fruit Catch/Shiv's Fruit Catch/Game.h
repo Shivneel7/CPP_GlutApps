@@ -29,7 +29,7 @@ class Game {
     bool gameOver;
     bool showExplosion;
     bool paused;
-
+    int seconds;
     //increases as game goes on. Controls bomb, fruit, and health upgrade spawn rate
     int difficulty;
     // Whether or not to turn on certain debugging features
@@ -50,11 +50,11 @@ class Game {
     void spawnFallingObject();
     void spawn(ID id);
 
+    friend void frameCounter(int id);
     friend void gameLoop(int id);
     friend void spawnFallingObjectLoop(int id);
     friend void playerAnimation(int id);
     friend void explosionAnimation(int id);
-    friend void difficultyTimer(int id);
 
     ~Game();
 };
