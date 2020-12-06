@@ -12,12 +12,17 @@ class Game {
     std::vector<Sprite *> movingGameObjects;
 
     TexRect *bg;
+    TexRect *pauseScreen;
+    TexRect *lossScreen;
+    
+
     Player *player;
 
     Sprite *explosion;
 
     bool gameOver;
     bool showExplosion;
+    bool paused;
 
     //Whether or not to turn on certain debugging features
     bool debugModeEnabled;

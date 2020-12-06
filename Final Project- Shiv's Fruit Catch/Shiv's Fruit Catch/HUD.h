@@ -5,19 +5,25 @@
 #include <vector>
 // Displays all non moving HUD components
 class HUD {
-    Text *scoreText;
+    Text *fruitCollectedText;
+    Text *fruitDroppedText;
+
     Bar *healthBar;
     Bar *energyBar;
 
     std::vector<Rect *> hudComponents;
 
-    int score;
+    int fruitCollected;
+    int fruitDropped;
+
 
   public:
     HUD();
     HUD(HUD &other);
 
     void increaseScore(int amount);
+    
+    void droppedFruit();
 
     void increaseHealth();
     void decreaseHealth();

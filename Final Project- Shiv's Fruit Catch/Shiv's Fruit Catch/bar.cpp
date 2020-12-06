@@ -43,3 +43,7 @@ void Bar::increment(float f) {
 float Bar::getPercent() const {
     return percent;
 }
+
+bool Bar::isEmpty() {
+    return percent < .0001;
+}

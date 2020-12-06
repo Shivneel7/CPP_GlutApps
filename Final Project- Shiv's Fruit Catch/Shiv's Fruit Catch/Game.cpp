@@ -26,151 +26,156 @@ void explosionAnimation(int id) {
 }
 
 void gameLoop(int id) {
-    // Faster Movement controller
-    if (singleton->player->isSpeedBoosted() && singleton->player->isMoving()) {
-        singleton->hud->decreaseEnergy();
+    if (!singleton->paused && !singleton->gameOver) {
 
-        if (!singleton->hud->hasEnergy()) {
-            singleton->player->setSpeedBoost(false);
+        // Faster Movement controller
+        if (singleton->player->isSpeedBoosted() && singleton->player->isMoving()) {
+            singleton->hud->decreaseEnergy();
+
+            if (!singleton->hud->hasEnergy()) {
+                singleton->player->setSpeedBoost(false);
+            }
         }
+
+        for (auto i = singleton->movingGameObjects.begin(); i != singleton->movingGameObjects.end();) {
+            bool shouldIncrement = true;
+
+            (*i)->idle();
+
+            switch ((*i)->getID()) {
+
+            case fruit:
+                if (singleton->player->checkBasketCollision(*(*i))) {
+
+                    singleton->hud->increaseScore(1);
+
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+
+                } else if ((*i)->getY() < -.75) { // Fruit left the screen
+
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+                    singleton->hud->droppedFruit();
+                }
+                break;
+
+            case health:
+                if (singleton->player->checkBasketCollision(*(*i))) {
+
+                    singleton->hud->increaseHealth();
+
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+
+                } else if ((*i)->getY() < -.75) { // HealthUpgrade left the screen
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+                }
+                break;
+
+            case energy:
+                if (singleton->player->checkBasketCollision(*(*i))) {
+
+                    singleton->hud->increaseEnergy();
+
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+                } else if ((*i)->getY() < -.75) { // Energy left the screen
+
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+                }
+                break;
+
+            case bomb:
+                if (singleton->player->checkCollision(*(*i))) {
+
+                    singleton->showExplosion = true;
+                    explosionAnimation(4);
+
+                    singleton->hud->decreaseHealth();
+                    if (singleton->hud->healthIsEmpty()) {
+                        singleton->gameOver = true;
+                    }
+
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+
+                } else if ((*i)->getY() < -.7) { // Bomb left the screen
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+                }
+                break;
+
+            case spiny:
+                (*i)->advance();
+
+                if ((*i)->getY() < -.65) {
+                    (*i)->setY(-.65);
+                    (*i)->setDY(0);
+                    if ((*i)->getX() < 0) {
+                        (*i)->setDX(.01);
+                    } else {
+                        (*i)->setDX(-.01);
+                    }
+                }
+                if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()) {
+                    singleton->player->setInvulnerable(true);
+
+                    singleton->hud->decreaseHealth();
+                    if (singleton->hud->healthIsEmpty()) {
+                        singleton->gameOver = true;
+                    }
+                }
+
+                if ((*i)->getX() < -1.2 || (*i)->getX() > 1.2) { // shell left play area
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+                }
+                break;
+            }
+
+            if (shouldIncrement) {
+                ++i;
+            }
+        }
+
+        singleton->explosion->setX(singleton->player->getX());
+        singleton->explosion->setY(singleton->player->getY());
+        glutPostRedisplay();
+        frames++;
     }
-
-    for (auto i = singleton->movingGameObjects.begin(); i != singleton->movingGameObjects.end();) {
-        bool shouldIncrement = true;
-        (*i)->idle();
-
-        switch ((*i)->getID()) {
-
-        case fruit:
-            if (singleton->player->checkBasketCollision(*(*i))) {
-
-                singleton->hud->increaseScore(1);
-
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-
-            } else if ((*i)->getY() < -.75) { // Fruit left the screen
-
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-                // singleton->lost++;
-                // singleton->s->setText("Score: " + std::to_string(singleton->score) + " Lost: " + std::to_string(singleton->lost));
-            }
-            break;
-
-        case health:
-            if (singleton->player->checkBasketCollision(*(*i))) {
-
-                singleton->hud->increaseHealth();
-
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-
-            } else if ((*i)->getY() < -.75) { // HealthUpgrade left the screen
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-            }
-            break;
-
-        case energy:
-            if (singleton->player->checkBasketCollision(*(*i))) {
-
-                singleton->hud->increaseEnergy();
-
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-            } else if ((*i)->getY() < -.75) { // Fruit left the screen
-
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-            }
-            break;
-
-        case bomb:
-            if (singleton->player->checkCollision(*(*i))) {
-
-                singleton->showExplosion = true;
-                explosionAnimation(4);
-
-                singleton->hud->decreaseHealth();
-                if (singleton->hud->healthIsEmpty()) {
-                    // LOSE
-                }
-
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-
-            } else if ((*i)->getY() < -.7) { // Bomb left the screen
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-            }
-            break;
-
-        case spiny:
-            (*i)->advance();
-
-            if ((*i)->getY() < -.65) {
-                (*i)->setY(-.65);
-                (*i)->setDY(0);
-                if ((*i)->getX() < 0) {
-                    (*i)->setDX(.01);
-                } else {
-                    (*i)->setDX(-.01);
-                }
-            }
-            if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()) {
-                singleton->player->setInvulnerable(true);
-
-                singleton->hud->decreaseHealth();
-                if (singleton->hud->healthIsEmpty()) {
-                    // LOSE
-                }
-            }
-
-            if ((*i)->getX() < -1.2 || (*i)->getX() > 1.2) { // shell left play area
-                delete (*i);
-                i = singleton->movingGameObjects.erase(i);
-                shouldIncrement = false;
-            }
-            break;
-        }
-
-        if (shouldIncrement) {
-            ++i;
-        }
-    }
-
-    singleton->explosion->setX(singleton->player->getX());
-    singleton->explosion->setY(singleton->player->getY());
-
-    glutPostRedisplay();
-    frames++;
-
     glutTimerFunc(1000.0 / 60, gameLoop, id);
 }
 
 void playerAnimation(int id) {
-    singleton->player->advance();
+    if (!singleton->paused && !singleton->gameOver)
+        singleton->player->advance();
+
     glutTimerFunc(100, playerAnimation, id);
 }
 
 void spawnFruit(int id) {
-    singleton->createFruit();
+    if (!singleton->paused && !singleton->gameOver)
+        singleton->createFruit();
+
     glutTimerFunc(500, spawnFruit, id);
 }
 
 void Game::createFruit() {
     float objectX = (rand() % 190) / 100.0 - 1.0;
 
-    switch (rand() % 8) {
+    switch (rand() % 9) {
     case 0:
         movingGameObjects.push_back(new Sprite("apple.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
         break;
@@ -184,33 +189,49 @@ void Game::createFruit() {
         movingGameObjects.push_back(new Sprite("grape.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
         break;
     case 4:
+        movingGameObjects.push_back(new Sprite("grape.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        break;
+
+    case 5:
         if (rand() % 2) {
             movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
         } else {
             movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
         }
         break;
-    case 5:
+
+    case 6:
         movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
         break;
-    case 6:
-        movingGameObjects.push_back(new Sprite("health.png", objectX, 1.2, .1, .1, 0, -.01, health));
-        break;
+
     case 7:
-        movingGameObjects.push_back(new Sprite("energy.png", objectX, 1.2, .1, .1, 0, -.01, energy));
+        int lowerChances; // cheap and dirty way to lower the chance of a health object spawning while increasing chance of bomb
+        lowerChances = rand() % 4;
+        std::cout << lowerChances << std::endl;
+        if (lowerChances == 0) {
+            movingGameObjects.push_back(new Sprite("health.png", objectX, 1.2, .1, .1, 0, -.01, health));
+        } else {
+            movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+        }
+        break;
+
+    case 8:
+        movingGameObjects.push_back(new Sprite("energy.png", objectX, 1.2, .1, .15, 0, -.01, energy));
         break;
     }
 }
 
 Game::Game() {
     srand(time(NULL));
-
-    showExplosion = false;
     debugModeEnabled = false;
+    paused = false;
+    showExplosion = false;
     gameOver = false;
 
     hud = new HUD();
     bg = new TexRect("bg.png", -1, 1, 2, 2);
+    pauseScreen = new TexRect("pause.png", -1, 1, 2, 2);
+    lossScreen = new TexRect("lose.png", -1, 1, 2, 2);
 
     player = new Player(debugModeEnabled);
     movingGameObjects.push_back(player);
@@ -245,6 +266,9 @@ void Game::keyDown(unsigned char key, float x, float y) {
 
     } else if (key == 'w' || key == 'W' || key == ' ') {
         player->jump();
+    } else if (key == 'p' || key == 'P') {
+        paused = !paused;
+        glutPostRedisplay();
     }
 }
 
@@ -270,17 +294,25 @@ void Game::specialKeyUp(int key, float x, float y) {
 }
 
 void Game::draw() const {
-    bg->draw();
+    if (gameOver) {
+        lossScreen->draw();
 
-    for (auto i = movingGameObjects.begin(); i != movingGameObjects.end(); i++) {
-        (*i)->draw();
-        if (debugModeEnabled)
-            (*i)->showBounds();
-    }
-    if (showExplosion) {
-        explosion->draw();
-    }
+    } else {
 
+        if (paused) {
+            pauseScreen->draw();
+        } else {
+            bg->draw();
+        }
+        for (auto i = movingGameObjects.begin(); i != movingGameObjects.end(); i++) {
+            (*i)->draw();
+            if (debugModeEnabled)
+                (*i)->showBounds();
+        }
+        if (showExplosion) {
+            explosion->draw();
+        }
+    }
     hud->draw();
 }
 
@@ -291,4 +323,6 @@ Game::~Game() {
     delete hud;
     delete explosion;
     delete bg;
+    delete pauseScreen;
+    delete lossScreen;
 }

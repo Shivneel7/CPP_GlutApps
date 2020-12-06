@@ -18,6 +18,9 @@ class Player : public Sprite {
     // The original bounds of the mario texture was too large, so, I made this rectangle which acts as an artifical boundary box for collision detection
     Rect *bounds;
 
+    Rect *basketBounds;
+
+
     bool facingLeft;
     bool speedBoost;
     bool moving;

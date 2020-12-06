@@ -24,9 +24,7 @@ class MovingTexRect : public TexRect {
     MovingTexRect(const char *filename, float x, float y, float w, float h, float dx, float dy, ID id);
 
     virtual void idle();
-
-    virtual bool checkCollision(const Rect &r) const;
-
+    
     // Call showBounds() in the draw method of a child to draw the collision bound rectangle for debugging purposes
     virtual void showBounds() const;
 

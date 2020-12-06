@@ -4,6 +4,7 @@
 Player::Player(bool debug) : Sprite("player.png", 1, 8, -.1, -.62, .25, .3, 0, 0, true, player), basket(new MovingTexRect("basket.png", -.1, -.72, .2, .1, 0, 0, defaultID)), bounds(new Rect(x, y, w, h)), debugMode(debug), facingLeft(0), speedBoost(0), jumping(0), invulnerable(0), showPlayer(1), invulnerableCount(0) {
     bounds->setW(.125);
     bounds->setH(.2);
+    basketBounds = new Rect(0, 0, .19, .01);
 }
 
 void Player::draw(float z) const {
@@ -49,7 +50,6 @@ void Player::draw(float z) const {
     // Displays bounds of player
     if (debugMode) {
         showBounds();
-        basket->showBounds();
     }
 
     basket->draw();
@@ -112,13 +112,17 @@ void Player::idle() {
     if (facingLeft) {
         bounds->setX(x + .075);
         basket->setX(x - .125);
+        basketBounds->setX(basket->getX() + .04);
 
     } else {
         bounds->setX(x + .05);
         basket->setX(x + .175);
+        basketBounds->setX(basket->getX() -  .035);
     }
     bounds->setY(y - .05);
     basket->setY(y - .1);
+
+    basketBounds->setY(basket->getY());
 }
 
 void Player::jump() {
@@ -131,12 +135,14 @@ void Player::jump() {
 void Player::showBounds() const {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     bounds->draw();
+    basketBounds->draw();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     // MovingTexRect::showBounds();
+    // basket->showBounds();
 }
 
 bool Player::checkCollision(const Rect &two) const {
-    return (bounds->getX() < (two.getX() + two.getW()) && two.getX() < (bounds->getX() + bounds->getW())) && (bounds->getY() > (two.getY() - two.getH()) && two.getY() > (bounds->getY() - bounds->getH()));
+    return bounds->checkCollision(two);
 }
 
 void Player::setIsFacingLeft(bool b) {
@@ -164,14 +170,15 @@ bool Player::isInvulnerable() const {
 }
 
 bool Player::checkBasketCollision(const Rect &two) {
-    return basket->checkCollision(two);
+    return basketBounds->checkCollision(two);
 }
 
 bool Player::checkBasketContains(float x, float y) {
-    return basket->contains(x, y);
+    return basketBounds->contains(x, y);
 }
 
 Player::~Player() {
     delete bounds;
     delete basket;
+    delete basketBounds;
 }

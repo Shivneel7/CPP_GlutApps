@@ -17,4 +17,6 @@ class Bar : public TexRect {
 
     void increment(float f);
     float getPercent() const;
+
+    bool isEmpty();
 };

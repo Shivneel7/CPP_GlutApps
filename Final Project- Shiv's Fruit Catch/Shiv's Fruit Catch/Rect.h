@@ -18,6 +18,7 @@ public:
 	Rect(float, float, float, float, float r=1, float g=0, float b=0);
 
 	virtual void draw(float z=0) const;
+    virtual bool checkCollision(const Rect &r) const;
 
 	void setY(float y);
 	float getY() const;

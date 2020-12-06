@@ -1,30 +1,41 @@
 #include "HUD.h"
 
 HUD::HUD() {
-    score = 0;
-    scoreText = new Text(.4, -.8, "Score: 0");
-    healthBar = new Bar("health-full2.png", -.95, -.85, .5, .15, "health-empty2.png", 1);
-    energyBar = new Bar("energy-full.png", -.3, -.85, .5, .15, "energy-empty.png", 0);
+    fruitCollected = 0;
+    fruitDropped = 0;
 
-    hudComponents.push_back(scoreText);
+    fruitCollectedText = new Text(.3, -.8, "Fruits Collected: 0", 44/255.0, 169/255.0, 82/255.0);
+    hudComponents.push_back(fruitCollectedText);
+
+    fruitDroppedText = new Text(.3, -.88, "Fruits Dropped: 0", 1, 0, 0);
+    hudComponents.push_back(fruitDroppedText);
+
+    healthBar = new Bar("health-full.png", -.99, -.88, .5, .1, "health-empty.png", 1);
     hudComponents.push_back(healthBar);
+
+    energyBar = new Bar("energy-full.png", -.39, -.88, .5, .1, "energy-empty.png", 1);
     hudComponents.push_back(energyBar);
 }
 
-HUD::HUD(HUD &other) : scoreText(other.scoreText), score(score), healthBar(other.healthBar) {
+HUD::HUD(HUD &other) : fruitCollectedText(other.fruitCollectedText), fruitCollected(fruitCollected), healthBar(other.healthBar) {
 }
 
 void HUD::increaseScore(int amount) {
-    score += amount;
-    scoreText->setText("Score: " + std::to_string(score));
+    fruitCollected += amount;
+    fruitCollectedText->setText("Fruits Collected: " + std::to_string(fruitCollected));
+}
+
+void HUD::droppedFruit() {
+    fruitDropped++;
+    fruitDroppedText->setText("Fruits Dropped: " + std::to_string(fruitDropped));
 }
 
 void HUD::increaseHealth() {
-    healthBar->increment(1.0 / 6);
+    healthBar->increment(1.0 / 5);
 }
 
 void HUD::decreaseHealth() {
-    healthBar->increment(-1.0 / 6);
+    healthBar->increment(-1.0 / 5);
 }
 
 void HUD::increaseEnergy() {
@@ -36,7 +47,7 @@ void HUD::decreaseEnergy() {
 }
 
 bool HUD::hasEnergy() const {
-    return energyBar->getPercent() > 0;
+    return !energyBar->isEmpty();
 }
 
 void HUD::draw(float z) const {
@@ -46,7 +57,7 @@ void HUD::draw(float z) const {
 }
 
 bool HUD::healthIsEmpty() const {
-    return healthBar->getPercent() == 0;
+    return healthBar->isEmpty();
 }
 
 HUD::~HUD() {
