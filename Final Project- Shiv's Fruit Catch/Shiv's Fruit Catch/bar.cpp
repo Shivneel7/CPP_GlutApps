@@ -45,5 +45,9 @@ float Bar::getPercent() const {
 }
 
 bool Bar::isEmpty() {
-    return percent < .0001;
+    return percent < .00001;
+}
+
+Bar::~Bar(){
+    delete base;
 }

@@ -10,7 +10,7 @@ class Game {
     HUD* hud;
 
     std::vector<Sprite *> movingGameObjects;
-
+    
     TexRect *bg;
     TexRect *pauseScreen;
     TexRect *lossScreen;
@@ -38,10 +38,10 @@ class Game {
     void specialKeyUp(int key, float x, float y);
     void idle();
 
-    void createFruit();
+    void createFallingObject();
 
     friend void gameLoop(int id);
-    friend void spawnFruit(int id);
+    friend void spawnFallingObjectLoop(int id);
     friend void playerAnimation(int id);
     friend void explosionAnimation(int id);
 

@@ -165,14 +165,14 @@ void playerAnimation(int id) {
     glutTimerFunc(100, playerAnimation, id);
 }
 
-void spawnFruit(int id) {
+void spawnFallingObjectLoop(int id) {
     if (!singleton->paused && !singleton->gameOver)
-        singleton->createFruit();
+        singleton->createFallingObject();
 
-    glutTimerFunc(500, spawnFruit, id);
+    glutTimerFunc(500, spawnFallingObjectLoop, id);
 }
 
-void Game::createFruit() {
+void Game::createFallingObject() {
     float objectX = (rand() % 190) / 100.0 - 1.0;
 
     switch (rand() % 9) {
@@ -206,8 +206,7 @@ void Game::createFruit() {
 
     case 7:
         int lowerChances; // cheap and dirty way to lower the chance of a health object spawning while increasing chance of bomb
-        lowerChances = rand() % 4;
-        std::cout << lowerChances << std::endl;
+        lowerChances = rand() % 5;
         if (lowerChances == 0) {
             movingGameObjects.push_back(new Sprite("health.png", objectX, 1.2, .1, .1, 0, -.01, health));
         } else {
@@ -224,11 +223,14 @@ void Game::createFruit() {
 Game::Game() {
     srand(time(NULL));
     debugModeEnabled = false;
+
     paused = false;
-    showExplosion = false;
     gameOver = false;
 
+    showExplosion = false;
+    
     hud = new HUD();
+
     bg = new TexRect("bg.png", -1, 1, 2, 2);
     pauseScreen = new TexRect("pause.png", -1, 1, 2, 2);
     lossScreen = new TexRect("lose.png", -1, 1, 2, 2);
@@ -242,7 +244,7 @@ Game::Game() {
 
     gameLoop(0);
 
-    spawnFruit(1);
+    spawnFallingObjectLoop(1);
 
     // prints fps of the game every second
     frameCounter(2);
@@ -266,6 +268,7 @@ void Game::keyDown(unsigned char key, float x, float y) {
 
     } else if (key == 'w' || key == 'W' || key == ' ') {
         player->jump();
+        
     } else if (key == 'p' || key == 'P') {
         paused = !paused;
         glutPostRedisplay();

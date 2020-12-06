@@ -19,4 +19,6 @@ class Bar : public TexRect {
     float getPercent() const;
 
     bool isEmpty();
+
+    ~Bar();
 };

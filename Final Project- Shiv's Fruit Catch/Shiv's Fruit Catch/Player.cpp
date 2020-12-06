@@ -14,7 +14,6 @@ void Player::draw(float z) const {
 
         glBegin(GL_QUADS);
 
-        ///////////mario.png//////////////////
         glColor4f(1, 1, 1, 1);
 
         if (facingLeft) {
@@ -67,16 +66,20 @@ void Player::advance() {
 void Player::idle() {
     MovingTexRect::idle();
 
+    // make the player flash
     if (invulnerable) {
         showPlayer = !showPlayer;
         invulnerableCount++;
     }
+
+    // used as a timer to turn the player back to solid after it has started flashing
     if (invulnerableCount > 100) {
         invulnerable = false;
         invulnerableCount = 0;
         showPlayer = true;
     }
 
+    // increase the speed by a factor of 2 if the player is pressing the speedBoost key
     if (speedBoost) {
         x += dx;
     }
@@ -89,17 +92,15 @@ void Player::idle() {
     }
 
     // so the player does not leave the play area
-    if (x < -1) {
+    if (x < -1)
         x = -1;
-    }
-
-    if (x > 1 - w) {
+    if (x > 1 - w)
         x = 1 - w;
-    }
 
-    // gravity
+    // gravity for making player jump after a fall
     dy -= .001;
 
+    // so Player does not fall throug the floor
     if (y < -.5) {
         jumping = false;
         y = -.5;
@@ -117,7 +118,7 @@ void Player::idle() {
     } else {
         bounds->setX(x + .05);
         basket->setX(x + .175);
-        basketBounds->setX(basket->getX() -  .035);
+        basketBounds->setX(basket->getX() - .035);
     }
     bounds->setY(y - .05);
     basket->setY(y - .1);

@@ -10,10 +10,10 @@ HUD::HUD() {
     fruitDroppedText = new Text(.3, -.88, "Fruits Dropped: 0", 1, 0, 0);
     hudComponents.push_back(fruitDroppedText);
 
-    healthBar = new Bar("health-full.png", -.99, -.88, .5, .1, "health-empty.png", 1);
+    healthBar = new Bar("health-full.png", -.99, -.85, .55, .125, "health-empty.png", 1);
     hudComponents.push_back(healthBar);
 
-    energyBar = new Bar("energy-full.png", -.39, -.88, .5, .1, "energy-empty.png", 1);
+    energyBar = new Bar("energy-full.png", -.35, -.85, .55, .125, "energy-empty.png", 1);
     hudComponents.push_back(energyBar);
 }
 
@@ -31,11 +31,11 @@ void HUD::droppedFruit() {
 }
 
 void HUD::increaseHealth() {
-    healthBar->increment(1.0 / 5);
+    healthBar->increment(1.0 / TOTAL_HEALTH_POINTS);
 }
 
 void HUD::decreaseHealth() {
-    healthBar->increment(-1.0 / 5);
+    healthBar->increment(-1.0 / TOTAL_HEALTH_POINTS);
 }
 
 void HUD::increaseEnergy() {
