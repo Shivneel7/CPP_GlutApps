@@ -47,9 +47,10 @@ void HUD::decreaseEnergy() {
 }
 
 void HUD::lose() {
+
     fruitCollectedText->setX(-.5);
     fruitCollectedText->setY(.3);
-    fruitCollectedText->setColor(0,100/255.0,0);
+    fruitCollectedText->setColor(0, 100 / 255.0, 0);
     fruitCollectedText->setText("Good Job, You Collected " + std::to_string(fruitCollected) + " Fruit!");
 
     fruitDroppedText->setX(-.8);

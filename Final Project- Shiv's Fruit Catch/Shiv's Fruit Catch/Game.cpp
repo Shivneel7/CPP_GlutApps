@@ -123,17 +123,6 @@ void gameLoop(int id) {
                 break;
 
             case spiny:
-                (*i)->advance();
-
-                if ((*i)->getY() < -.65) {
-                    (*i)->setY(-.65);
-                    (*i)->setDY(0);
-                    if ((*i)->getX() < 0) {
-                        (*i)->setDX(.01);
-                    } else {
-                        (*i)->setDX(-.01);
-                    }
-                }
                 if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()) {
                     singleton->player->setInvulnerable(true);
 
@@ -172,115 +161,235 @@ void playerAnimation(int id) {
 }
 
 void difficultyTimer(int id) {
-    singleton->difficulty++;
-    std::cout << "Difficulty: " << singleton->difficulty << std::endl;
+    if (!singleton->paused) {
+        singleton->difficulty++;
+        std::cout << "Difficulty: " << singleton->difficulty << std::endl;
+    }
     glutTimerFunc(singleton->DIFFICULTY_INCREASE_MODIFIER * 1000, difficultyTimer, id);
 }
 
 void spawnFallingObjectLoop(int id) {
     if (!singleton->paused && !singleton->gameOver && !singleton->preGame)
-        singleton->createFallingObject();
+        singleton->spawnFallingObject();
 
     glutTimerFunc(500, spawnFallingObjectLoop, id);
 }
 
-void Game::createFallingObject() {
-    float objectX = (rand() % 190) / 100.0 - 1.0;
+void Game::spawnFallingObject() {
+    int rn = rand() % 100;
 
-    //this looks pretty bad, but this was the best way to fine tune the spawnrates with different difficulties
-    switch (rand() % 12) {
+    // May look ugly, but this was my favorite way to implement difficulty dependant spawnrates
+    int numCases = 17;
+    if (difficulty > 17) {
+        numCases = difficulty;
+    }
+
+    switch (rand() % numCases) {
     case 0:
-        movingGameObjects.push_back(new Sprite("banana.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        spawn(fruit);
         break;
 
     case 1:
-        movingGameObjects.push_back(new Sprite("apple.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        spawn(fruit);
         break;
 
     case 2:
-        movingGameObjects.push_back(new Sprite("mango.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        spawn(fruit);
         break;
 
     case 3:
-        movingGameObjects.push_back(new Sprite("grape.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        spawn(fruit);
         break;
 
     case 4:
-        if (difficulty < 1) { // as difficulty increases more dangerous objects will spawn
-            movingGameObjects.push_back(new Sprite("banana.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        if (difficulty < 2) { // as difficulty increases more dangerous objects will spawn
+            spawn(fruit);
         } else {
-            movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+            spawn(bomb);
         }
         break;
 
     case 5:
-        if (difficulty < 2) { // as difficulty increases more dangerous objects will spawn
-            movingGameObjects.push_back(new Sprite("apple.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        if (difficulty < 3) { // as difficulty increases more dangerous objects will spawn
+            spawn(fruit);
+
         } else {
-            movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+            spawn(bomb);
         }
         break;
 
     case 6:
-        if (difficulty < 3) { // as difficulty increases more dangerous objects will spawn
-            movingGameObjects.push_back(new Sprite("mango.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        if (difficulty < 4) { // as difficulty increases more dangerous objects will spawn
+            spawn(fruit);
+
         } else {
-            if (rand() % 2) {//50% chance of bomb
-                movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
-            } else {
-                if (rand() % 2) { //50% chance of spiny
-                    movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
-                } else {
-                    movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
-                }
+            if (rand() % 2) { // 50% chance of bomb
+                spawn(bomb);
+
+            } else { // 50% chance of spiny
+                spawn(spiny);
             }
         }
         break;
+
     case 7:
-        if (difficulty < 4) { // as difficulty increases more dangerous objects will spawn
-            movingGameObjects.push_back(new Sprite("grape.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+        if (difficulty < 5) { // as difficulty increases more dangerous objects will spawn
+            spawn(fruit);
+
         } else {
-            if (rand() % 2) {
-                movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
-            } else {
-                movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
-            }
+            spawn(spiny);
         }
         break;
 
     case 8:
-        if (difficulty > 5) { // as difficulty increases more dangerous objects will spawn
-            movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
-            movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
+        if (difficulty > 7) { // as difficulty increases more dangerous objects will spawn
+            spawn(doubleSpiny);
+
         } else {
-            if (rand() % 2) {
-                movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, -1, 1.2, .15, .15, 0, -.01, true, spiny));
-            } else {
-                movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .85, 1.2, .15, .15, 0, -.01, true, spiny));
-            }
+            spawn(spiny);
         }
         break;
 
     case 9:
-        movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+        spawn(bomb);
+
+        if (difficulty > 6) { // as difficulty increases two bombs will spawn
+            spawn(bomb);
+        }
         break;
 
     case 10:
         int lowerChances;
-        if (difficulty < 6) {
-            lowerChances = rand() % (8 - difficulty); // if the difficulty goes up INCREASE chance of health spawn so skilled players can be rewarded
-        } else {
-            lowerChances = 3;
+        // spawn more health as difficulty increases to reward skilled players
+        lowerChances = rand() % 5;
+        if (difficulty > 9) {
+            lowerChances = rand() % 4;
         }
-
+        if (difficulty > 13) {
+            lowerChances = rand() % 3;
+        }
+        if (difficulty > 18) {
+            lowerChances = 0;
+        }
         if (lowerChances == 0) {
-            movingGameObjects.push_back(new Sprite("health.png", objectX, 1.2, .1, .1, 0, -.01, health));
+            spawn(health);
+
         } else {
-            movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+            spawn(bomb);
         }
         break;
 
     case 11:
+        spawn(energy);
+        break;
+
+    case 12:
+        if (difficulty < 8) { // as difficulty increases more dangerous objects will spawn
+            spawn(fruit);
+
+        } else {
+            spawn(bomb);
+
+            spawn(bomb);
+        }
+        break;
+
+    case 13:
+        if (difficulty < 9) { // as difficulty increases more dangerous objects will spawn
+            spawn(fruit);
+
+        } else {
+            spawn(bomb);
+            spawn(bomb);
+        }
+        break;
+
+    case 14:
+        if (difficulty < 10) { // as difficulty increases more dangerous objects will spawn
+            spawn(fruit);
+
+        } else {
+            if (rand() % 2) { // 50% chance of bomb
+                spawn(bomb);
+                spawn(bomb);
+
+            } else { // 50% chance of spines
+                spawn(doubleSpiny);
+            }
+        }
+        break;
+    case 15:
+        if (difficulty < 11) { // as difficulty increases more dangerous objects will spawn
+            spawn(fruit);
+
+        } else {
+            spawn(doubleSpiny);
+        }
+        break;
+    case 16:
+        if (rand() % 2) {
+            spawn(energy);
+
+        } else {
+            spawn(spiny);
+        }
+        break;
+    default:
+        if (rand() % 2) { // 50% chance of bomb
+            spawn(bomb);
+
+        } else {
+            if (rand() % 2) { // 25% chance of double spiny
+                spawn(doubleSpiny);
+            }
+            spawn(spiny);
+        }
+    }
+}
+
+// Made this function in case I want to change the values of these constant later.
+void Game::spawn(ID id) {
+    float objectX = (rand() % 190) / 100.0 - 1.0;
+
+    switch (id) {
+    case fruit:
+        switch (rand() % 4) {
+        case 0:
+            movingGameObjects.push_back(new Sprite("banana.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+            break;
+
+        case 1:
+            movingGameObjects.push_back(new Sprite("mango.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+            break;
+
+        case 2:
+            movingGameObjects.push_back(new Sprite("apple.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+            break;
+
+        case 3:
+            movingGameObjects.push_back(new Sprite("grape.png", objectX, 1.2, .1, .1, 0, -.01, fruit));
+            break;
+        }
+        break;
+
+    case spiny:
+        movingGameObjects.push_back(new Spiny());
+        break;
+
+    case doubleSpiny:
+        movingGameObjects.push_back(new Spiny(0));
+        movingGameObjects.push_back(new Spiny(1));
+
+        break;
+    case bomb:
+        movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+        break;
+
+    case health:
+        movingGameObjects.push_back(new Sprite("health.png", objectX, 1.2, .1, .1, 0, -.01, health));
+        break;
+
+    case energy:
         movingGameObjects.push_back(new Sprite("energy.png", objectX, 1.2, .1, .15, 0, -.01, energy));
         break;
     }

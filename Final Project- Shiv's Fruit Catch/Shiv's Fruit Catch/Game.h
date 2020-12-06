@@ -2,13 +2,14 @@
 
 #include "HUD.h"
 #include "Player.h"
+#include "Spiny.h"
 #include <vector>
 
 class Game {
     static const float PLAYER_BASE_SPEED;
 
     //how often in seconds to ramp up the Difficulty
-    static const int DIFFICULTY_INCREASE_MODIFIER = 1;
+    static const int DIFFICULTY_INCREASE_MODIFIER = 10;
 
     HUD *hud;
 
@@ -45,7 +46,9 @@ class Game {
     void specialKeyUp(int key, float x, float y);
     void idle();
 
-    void createFallingObject();
+    //controls spawnRates of the specific objects
+    void spawnFallingObject();
+    void spawn(ID id);
 
     friend void gameLoop(int id);
     friend void spawnFallingObjectLoop(int id);
