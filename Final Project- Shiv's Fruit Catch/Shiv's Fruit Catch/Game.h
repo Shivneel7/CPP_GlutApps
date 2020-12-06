@@ -9,14 +9,14 @@ class Game {
 
     HUD* hud;
 
-    std::vector<Sprite *> objects;
+    std::vector<Sprite *> movingGameObjects;
 
     TexRect *bg;
     Player *player;
 
     Sprite *explosion;
 
-    int lost;
+    bool gameOver;
     bool showExplosion;
 
     //Whether or not to turn on certain debugging features

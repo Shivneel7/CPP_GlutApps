@@ -15,16 +15,15 @@ class Player : public Sprite {
 
     MovingTexRect *basket;
 
-    //The original bounds of the mario texture was too large, so, I made this rectangle which acts as an artifical boundary box for collision detection
+    // The original bounds of the mario texture was too large, so, I made this rectangle which acts as an artifical boundary box for collision detection
     Rect *bounds;
-
 
     bool facingLeft;
     bool speedBoost;
     bool moving;
     bool jumping;
     bool debugMode;
-    //Used so Player doesnt take multiple damage ticks when in contact with a persistance damage source
+    // Used so Player doesnt take multiple damage ticks when in contact with a persistance damage source
     bool showPlayer, invulnerable;
     int invulnerableCount;
 
@@ -35,10 +34,15 @@ class Player : public Sprite {
     void idle();
     void jump();
     void advance();
+
     // facing left is 1, facing right is 0;
     void setIsFacingLeft(bool b);
-    void setIsFaster(bool b);
+
+    void setSpeedBoost(bool b);
+    bool isSpeedBoosted() const;
+
     bool isMoving() const;
+
     void setInvulnerable(bool b);
     bool isInvulnerable() const;
 

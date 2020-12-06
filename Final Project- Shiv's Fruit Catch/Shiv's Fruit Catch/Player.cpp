@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "iostream"
 
-Player::Player(bool debug) : Sprite("player.png", 1, 8, -.1, -.62, .25, .3, 0, 0, true, player), basket(new MovingTexRect("basket.png", -.1, -.72, .2, .1, 0, 0, defaultID)), bounds(new Rect(x, y, w, h)), debugMode(debug), facingLeft(0), speedBoost(0), jumping(0), invulnerable(0), showPlayer(1), invulnerableCount(0){
+Player::Player(bool debug) : Sprite("player.png", 1, 8, -.1, -.62, .25, .3, 0, 0, true, player), basket(new MovingTexRect("basket.png", -.1, -.72, .2, .1, 0, 0, defaultID)), bounds(new Rect(x, y, w, h)), debugMode(debug), facingLeft(0), speedBoost(0), jumping(0), invulnerable(0), showPlayer(1), invulnerableCount(0) {
     bounds->setW(.125);
     bounds->setH(.2);
 }
@@ -143,8 +143,12 @@ void Player::setIsFacingLeft(bool b) {
     facingLeft = b;
 }
 
-void Player::setIsFaster(bool b) {
+void Player::setSpeedBoost(bool b) {
     speedBoost = b;
+}
+
+bool Player::isSpeedBoosted() const {
+    return speedBoost;
 }
 
 bool Player::isMoving() const {

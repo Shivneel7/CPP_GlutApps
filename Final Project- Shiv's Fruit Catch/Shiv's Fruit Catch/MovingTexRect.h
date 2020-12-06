@@ -4,7 +4,7 @@
 
 /** ID of the movingSprite object for object interaction purposes in the Game.cpp file
  */
-enum ID { fruit, bomb, player, spiny, defaultID };
+enum ID { fruit, bomb, player, spiny, health, energy, defaultID };
 
 /**This is a base class for any object in the game that moves.
  *
@@ -21,9 +21,8 @@ class MovingTexRect : public TexRect {
     ID id;
 
   public:
-
     MovingTexRect(const char *filename, float x, float y, float w, float h, float dx, float dy, ID id);
-    
+
     virtual void idle();
 
     virtual bool checkCollision(const Rect &r) const;
