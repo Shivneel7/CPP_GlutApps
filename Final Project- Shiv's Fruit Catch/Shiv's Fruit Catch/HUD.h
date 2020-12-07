@@ -5,7 +5,7 @@
 #include <vector>
 
 // Displays all non moving HUD components
-class HUD {
+class HUD : public Shape{
     static const int TOTAL_HEALTH_POINTS = 5;
 
     Text *fruitCollectedText;

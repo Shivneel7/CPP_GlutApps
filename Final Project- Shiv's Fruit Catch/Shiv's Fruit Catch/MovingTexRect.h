@@ -4,7 +4,7 @@
 
 /** ID of the movingSprite object for object interaction purposes in the Game.cpp file
  */
-enum ID { fruit, bomb, player, spiny, health, energy, doubleSpiny, defaultID };
+enum ID { fruit, bomb, player, spiny, health, energy, doubleSpiny, demo, explosion, defaultID };
 
 /**This is a base class for any object in the game that moves.
  *

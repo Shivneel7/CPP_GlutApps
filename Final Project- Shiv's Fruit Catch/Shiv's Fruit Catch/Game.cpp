@@ -12,7 +12,7 @@ void frameCounter(int id) {
     if (!singleton->debugModeEnabled) {
         std::cout << "FPS: " << frames << std::endl;
     } else {
-        std::cout << "Seconds " << singleton->seconds << std::endl;
+        // std::cout << "Seconds " << singleton->seconds << std::endl;
     }
 
     frames = 0;
@@ -38,9 +38,6 @@ void explosionAnimation(int id) {
 }
 
 void gameLoop(int id) {
-    if (singleton->preGame) {
-        singleton->demo->advance();
-    }
 
     if (!singleton->paused && !singleton->gameOver) {
 
@@ -121,7 +118,8 @@ void gameLoop(int id) {
                     singleton->hud->decreaseHealth();
                     if (singleton->hud->healthIsEmpty()) {
                         singleton->hud->setSeconds(singleton->seconds);
-                        singleton->gameOver = true;
+                        if (!singleton->debugModeEnabled)
+                            singleton->gameOver = true;
                     }
 
                     delete (*i);
@@ -142,11 +140,21 @@ void gameLoop(int id) {
                     singleton->hud->decreaseHealth();
                     if (singleton->hud->healthIsEmpty()) {
                         singleton->hud->setSeconds(singleton->seconds);
-                        singleton->gameOver = true;
+                        if (!singleton->debugModeEnabled)
+                            singleton->gameOver = true;
                     }
                 }
 
                 if ((*i)->getX() < -1.2 || (*i)->getX() > 1.2) { // shell left play area
+                    delete (*i);
+                    i = singleton->movingGameObjects.erase(i);
+                    shouldIncrement = false;
+                }
+                break;
+
+            case demo:
+                (*i)->advance();
+                if (!singleton->preGame) {
                     delete (*i);
                     i = singleton->movingGameObjects.erase(i);
                     shouldIncrement = false;
@@ -181,9 +189,9 @@ void spawnFallingObjectLoop(int id) {
     glutTimerFunc(500, spawnFallingObjectLoop, id);
 }
 
-Game::Game() {
+Game::Game(bool shouldDebugModeBeEnabled) {
     srand(time(NULL));
-    debugModeEnabled = 0;
+    debugModeEnabled = shouldDebugModeBeEnabled;
     preGame = true;
     paused = false;
     gameOver = false;
@@ -192,20 +200,28 @@ Game::Game() {
     showExplosion = false;
 
     hud = new HUD();
+    miscShapes.push_back(hud);
 
     infoScreen = new TexRect("info.png", -1, 1, 2, 2);
-
+    miscShapes.push_back(infoScreen);
+    // for animation of the spiny on the infoscreen
+    spawn(demo);
     bg = new TexRect("bg.png", -1, 1, 2, 2);
+    miscShapes.push_back(bg);
+
     pauseScreen = new TexRect("pause.png", -1, 1, 2, 2);
+    miscShapes.push_back(pauseScreen);
+
     lossScreen = new TexRect("lose.png", -1, 1, 2, 2);
+    miscShapes.push_back(lossScreen);
 
     player = new Player(debugModeEnabled);
     movingGameObjects.push_back(player);
 
-    explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.3, 0.4, false);
+    // put it here so I can easily turn on and off the explosion drawing
+    explosion = new Sprite("explosion.png", 5, 5, -0.8, 0.8, 0.3, 0.4, false, ID::explosion);
+    miscShapes.push_back(explosion);
 
-    // for DEMO
-    demo = new Sprite("spiny.png", 1, 16, .64, 0.33, .15, .15, 0, 0, true, spiny);
     singleton = this;
 
     gameLoop(0);
@@ -224,8 +240,8 @@ void Game::spawnFallingObject() {
     int rn = rand() % (100 + difficulty);
     if (debugModeEnabled)
         std::cout << rn << std::endl;
-    if (rn < 60) {
-        if (rn < 20 && rn < (difficulty * 2)) { // at difficulty 1, 60% fruit spawns. difficulty 13 = 40% fruit
+    if (rn < 62) {
+        if (rn < 20 && rn < difficulty) { // at difficulty 1, 60% fruit spawns. difficulty 20 = 40% fruit
             if (rand() % 2) {
                 spawn(bomb);
             } else if ((rand() % 2)) { // at difficulty 1: 75% bomb, 25% spiny. at difficulty 13: 50/50
@@ -241,7 +257,7 @@ void Game::spawnFallingObject() {
         } else
             spawn(fruit);
 
-    } else if (rn < 71) {
+    } else if (rn < 72) {
         spawn(bomb);
         if (difficulty > 7) { // double bombs at diff 7 and on
             spawn(bomb);
@@ -257,7 +273,7 @@ void Game::spawnFallingObject() {
             spawn(spiny);
         }
 
-    } else if (rn < 91) {
+    } else if (rn < 90) {
         spawn(energy);
 
     } else if (rn < 100) {
@@ -330,6 +346,9 @@ void Game::spawn(ID id) {
     case energy:
         movingGameObjects.push_back(new Sprite("energy.png", objectX, 1.2, .1, .15, 0, -.01, energy));
         break;
+    case demo:
+        movingGameObjects.push_back(new Sprite("spiny.png", 1, 16, .64, 0.33, .15, .15, 0, 0, true, demo));
+        break;
     }
 }
 
@@ -339,9 +358,7 @@ void Game::idle() {
 void Game::keyDown(unsigned char key, float x, float y) {
     if (key == ' ' && preGame) {
         preGame = false;
-        demo->setX(1.5);
         seconds = 0;
-        // delete demo;
 
     } else if (key == 'a' || key == 'A') {
         player->setDX(player->getDX() - PLAYER_BASE_SPEED);
@@ -388,7 +405,6 @@ void Game::draw() const {
     } else {
         if (preGame) {
             infoScreen->draw();
-            demo->draw();
         } else if (paused) {
             pauseScreen->draw();
         } else {
@@ -412,11 +428,8 @@ Game::~Game() {
     for (auto i = movingGameObjects.begin(); i != movingGameObjects.end(); i++) {
         delete *i;
     }
-    delete infoScreen;
-    delete hud;
-    delete demo;
-    delete explosion;
-    delete bg;
-    delete pauseScreen;
-    delete lossScreen;
+
+    for (auto i = miscShapes.begin(); i != miscShapes.end(); i++) {
+        delete *i;
+    }
 }

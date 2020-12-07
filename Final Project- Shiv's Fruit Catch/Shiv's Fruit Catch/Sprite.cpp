@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-Sprite::Sprite(const char *filename, float x, float y, float w, float h) : MovingTexRect(filename, x, y, w, h, dx, dy, defaultID) {
+Sprite::Sprite(const char *filename, float x, float y, float w, float h, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {
     rows = 1;
     cols = 1;
 
@@ -14,7 +14,7 @@ Sprite::Sprite(const char *filename, float x, float y, float w, float h, float d
     reset();
 }
 
-Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, bool l) : MovingTexRect(filename, x, y, w, h, 0, 0, defaultID) {
+Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, bool l, ID id) : MovingTexRect(filename, x, y, w, h, 0, 0, id) {
     this->rows = rows;
     this->cols = cols;
     this->loop = l;

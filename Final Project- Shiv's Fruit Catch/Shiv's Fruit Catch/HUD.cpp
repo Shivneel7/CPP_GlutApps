@@ -1,6 +1,6 @@
 #include "HUD.h"
 
-HUD::HUD() {
+HUD::HUD(){
     fruitCollected = 0;
     fruitDropped = 0;
 

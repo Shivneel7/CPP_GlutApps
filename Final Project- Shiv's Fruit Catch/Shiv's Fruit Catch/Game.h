@@ -8,15 +8,15 @@
 class Game {
     static const float PLAYER_BASE_SPEED;
 
-    //how often in seconds to ramp up the Difficulty
+    // how often in seconds to ramp up the Difficulty
     static const int DIFFICULTY_INCREASE_MODIFIER = 10;
 
     HUD *hud;
 
     std::vector<Sprite *> movingGameObjects;
+    std::vector<Shape *> miscShapes;
 
     TexRect *infoScreen;
-    Sprite *demo;
     TexRect *bg;
     TexRect *pauseScreen;
     TexRect *lossScreen;
@@ -30,13 +30,13 @@ class Game {
     bool showExplosion;
     bool paused;
     int seconds;
-    //increases as game goes on. Controls bomb, fruit, and health upgrade spawn rate
+    // increases as game goes on. Controls bomb, fruit, and health upgrade spawn rate
     int difficulty;
     // Whether or not to turn on certain debugging features
     bool debugModeEnabled;
 
   public:
-    Game();
+    Game(bool debugModeEnabled = 0);
 
     void draw() const;
 
@@ -46,8 +46,9 @@ class Game {
     void specialKeyUp(int key, float x, float y);
     void idle();
 
-    //controls spawnRates of the specific objects
+    // controls spawnRates of the specific objects
     void spawnFallingObject();
+    //Spawns each individual falling object
     void spawn(ID id);
 
     friend void frameCounter(int id);
