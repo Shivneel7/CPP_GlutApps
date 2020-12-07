@@ -8,7 +8,7 @@ enum ID { fruit, bomb, player, spiny, health, energy, doubleSpiny, demo, explosi
 
 /**This is a base class for any object in the game that moves.
  *
- * Child of Sprite Class:
+ * Child of TexRect Class:
  *    Adds the idle function as well as member varaibles dx and dy, for movement purposes
  *
  *Contains an enum called ID so that the game can tell apart different objects

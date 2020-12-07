@@ -1,10 +1,7 @@
 #include "Sprite.h"
 
-Sprite::Sprite(const char *filename, float x, float y, float w, float h, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {
-    rows = 1;
-    cols = 1;
-
-    reset();
+Sprite::Sprite(const char *filename, float x, float y, float w, float h, ID id) : Sprite(filename, x, y, w, h, 0, 0, id) {
+    // This calls the next constructor with dx = 0; dy = 0;
 }
 
 Sprite::Sprite(const char *filename, float x, float y, float w, float h, float dx, float dy, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {
@@ -14,12 +11,9 @@ Sprite::Sprite(const char *filename, float x, float y, float w, float h, float d
     reset();
 }
 
-Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, bool l, ID id) : MovingTexRect(filename, x, y, w, h, 0, 0, id) {
-    this->rows = rows;
-    this->cols = cols;
-    this->loop = l;
+Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, bool l, ID id) : Sprite(filename, rows, cols, x, y, w, h, 0, 0, l, id) {
+    // This calls the next constructor with dx = 0; dy = 0;
 
-    reset();
 }
 
 Sprite::Sprite(const char *filename, int rows, int cols, float x, float y, float w, float h, float dx, float dy, bool l, ID id) : MovingTexRect(filename, x, y, w, h, dx, dy, id) {

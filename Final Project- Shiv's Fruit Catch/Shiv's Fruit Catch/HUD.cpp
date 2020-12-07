@@ -10,7 +10,7 @@ HUD::HUD(){
     fruitDroppedText = new Text(.3, -.88, "Fruits Dropped: 0", 1, 0, 0);
     hudComponents.push_back(fruitDroppedText);
 
-    timerText = new Text(1, .5, "", 0, 100 / 255.0, 0);
+    timerText = new Text(1, .5, "", 0, 0, 1);
     hudComponents.push_back(timerText);
 
     healthBar = new Bar("health-full.png", -.99, -.85, .55, .125, "health-empty.png", 1);

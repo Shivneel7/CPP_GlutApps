@@ -17,7 +17,6 @@ void Text::draw(float z) const {
 
     for (int i = 0; i < text.length(); i++) {
         glRasterPos2f(x + offset, y - 2 * (float)glutBitmapHeight(font) / windowH);
-        // glRasterPos2f(x+tXO+offset, y - tYO);
         glutBitmapCharacter(font, text[i]);
         offset += (2 * (float)glutBitmapWidth(font, text[i]) / windowW);
     }
