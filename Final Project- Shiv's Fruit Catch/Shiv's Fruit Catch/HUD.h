@@ -4,14 +4,15 @@
 #include "Text.h"
 #include <vector>
 
-// Displays all non moving HUD components
-class HUD : public Shape{
+/** Keeps track of score, health, energy
+ *  draws all nonmoving components that display text stats (e.g health, energy)
+ */
+class HUD : public Shape {
     static const int TOTAL_HEALTH_POINTS = 5;
 
     Text *fruitCollectedText;
     Text *fruitDroppedText;
     Text *timerText;
-
 
     Bar *healthBar;
     Bar *energyBar;
@@ -32,7 +33,11 @@ class HUD : public Shape{
     void setSeconds(int s);
 
     void increaseHealth();
-    void decreaseHealth();
+
+    /** decreaseHealth, returns true if health is empty.
+     * @return true if health is empty after decreasing
+     */
+    bool decreaseHealth();
     bool healthIsEmpty();
 
     void increaseEnergy();

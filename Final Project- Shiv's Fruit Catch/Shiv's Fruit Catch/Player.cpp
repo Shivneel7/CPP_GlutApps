@@ -14,7 +14,7 @@ void Player::draw(float z) const {
 
         glBegin(GL_QUADS);
 
-        glColor4f(1, 1, 1, 1);
+        glColor4f(r, g, b, 1);
 
         if (facingLeft) {
             glTexCoord2f(left, bottom);
@@ -68,15 +68,19 @@ void Player::idle() {
 
     // make the player flash
     if (invulnerable) {
-        showPlayer = !showPlayer;
+        setColor(1, 0, 0);
+        // if (invulnerableCount % 2 == 0)//controls the speed of the flashing/fading mario animation
+            showPlayer = !showPlayer;
         invulnerableCount++;
     }
 
     // used as a timer to turn the player back to solid after it has started flashing
     if (invulnerableCount > 100) {
-        invulnerable = false;
+        setColor(1, 1, 1);
         invulnerableCount = 0;
         showPlayer = true;
+        invulnerable = false;
+
     }
 
     // increase the speed by a factor of 2 if the player is pressing the speedBoost key

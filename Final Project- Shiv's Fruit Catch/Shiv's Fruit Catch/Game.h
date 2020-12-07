@@ -45,7 +45,7 @@ class Game {
     void keyUp(unsigned char key, float x, float y);
     void specialKeyUp(int key, float x, float y);
     void idle();
-
+    void lose();
     // controls spawnRates of the specific objects
     void spawnFallingObject();
     //Spawns each individual falling object

@@ -54,8 +54,9 @@ void HUD::increaseHealth() {
     healthBar->increment(1.0 / TOTAL_HEALTH_POINTS);
 }
 
-void HUD::decreaseHealth() {
+bool HUD::decreaseHealth() {
     healthBar->increment(-1.0 / TOTAL_HEALTH_POINTS);
+    return healthIsEmpty();
 }
 
 void HUD::increaseEnergy() {

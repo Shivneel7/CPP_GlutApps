@@ -110,16 +110,13 @@ void gameLoop(int id) {
                 break;
 
             case bomb:
-                if (singleton->player->checkCollision(*(*i))) {
+                if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable() && !singleton->showExplosion) {
 
                     singleton->showExplosion = true;
                     explosionAnimation(4);
 
-                    singleton->hud->decreaseHealth();
-                    if (singleton->hud->healthIsEmpty()) {
-                        singleton->hud->setSeconds(singleton->seconds);
-                        if (!singleton->debugModeEnabled)
-                            singleton->gameOver = true;
+                    if (singleton->hud->decreaseHealth()) { // note: Hud::decreaseHealth returns true if the health is empty
+                        singleton->lose();
                     }
 
                     delete (*i);
@@ -134,14 +131,11 @@ void gameLoop(int id) {
                 break;
 
             case spiny:
-                if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable()) {
+                if (singleton->player->checkCollision(*(*i)) && !singleton->player->isInvulnerable() && !singleton->showExplosion) {
                     singleton->player->setInvulnerable(true);
 
-                    singleton->hud->decreaseHealth();
-                    if (singleton->hud->healthIsEmpty()) {
-                        singleton->hud->setSeconds(singleton->seconds);
-                        if (!singleton->debugModeEnabled)
-                            singleton->gameOver = true;
+                    if (singleton->hud->decreaseHealth()) { // note: Hud::decreaseHealth returns true if the health is empty
+                        singleton->lose();
                     }
                 }
 
@@ -302,7 +296,8 @@ void Game::spawnFallingObject() {
 
 // Made this function in case I want to change the values of these constant later.
 void Game::spawn(ID id) {
-    float objectX = (rand() % 190) / 100.0 - 1.0;
+
+    float objectX = (rand() % 187) / 100.0 - 1.0; // note: 185 = floor((2.0 - width Of Object With Max Width) * 100). in this case our max width is .125 (the bomb)
     if (debugModeEnabled)
         std::cout << "ID: " << id << std::endl;
     switch (id) {
@@ -336,7 +331,7 @@ void Game::spawn(ID id) {
 
         break;
     case bomb:
-        movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .15, .15, 0, -.01, bomb));
+        movingGameObjects.push_back(new Sprite("bomb.png", objectX, 1.2, .125, .175, 0, -.01, bomb));
         break;
 
     case health:
@@ -353,6 +348,14 @@ void Game::spawn(ID id) {
 }
 
 void Game::idle() {
+}
+
+void Game::lose() {
+    if (!singleton->debugModeEnabled) {
+        hud->setSeconds(singleton->seconds);
+        player->setColor(1, 0, 0);
+        gameOver = true;
+    }
 }
 
 void Game::keyDown(unsigned char key, float x, float y) {
@@ -400,26 +403,27 @@ void Game::specialKeyUp(int key, float x, float y) {
 
 void Game::draw() const {
 
-    if (gameOver) {
-        lossScreen->draw();
-    } else {
-        if (preGame) {
-            infoScreen->draw();
-        } else if (paused) {
-            pauseScreen->draw();
-        } else {
-            bg->draw();
-        }
+    if (preGame) {
+        infoScreen->draw();
+    } else if (paused) {
+        pauseScreen->draw();
 
-        for (auto i = movingGameObjects.begin(); i != movingGameObjects.end(); i++) {
-            (*i)->draw();
-            if (debugModeEnabled)
-                (*i)->showBounds();
-        }
-        if (showExplosion) {
-            explosion->draw();
-        }
+    } else if (gameOver) {
+        lossScreen->draw();
+
+    } else {
+        bg->draw();
     }
+
+    for (auto i = movingGameObjects.begin(); i != movingGameObjects.end(); i++) {
+        (*i)->draw();
+        if (debugModeEnabled)
+            (*i)->showBounds();
+    }
+    if (showExplosion) {
+        explosion->draw();
+    }
+
     if (!preGame)
         hud->draw();
 }
